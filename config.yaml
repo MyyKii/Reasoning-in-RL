@@ -1,0 +1,3 @@
+rollout:
+  horizon: 200        # Länge jeder Episode
+  num_episodes: 1000  # Anzahl gesammelter Episoden

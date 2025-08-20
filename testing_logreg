@@ -1,0 +1,45 @@
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+
+# 1) Deine Feature-Funktion (wie gehabt)
+def compute_features(state: np.ndarray, action: float) -> np.ndarray:
+    x, x_dot, theta, theta_dot = state
+    f1 = max(0.0, abs(x) - 0.1) / 0.1
+    f2 = max(0.0, abs(theta) - 0.2) / 0.2
+    f3 = max(0.0, abs(theta_dot) - 1.0) / 1.0
+    f4 = max(0.0, abs(action) - 0.9) / 0.9
+    f5 = max(0.0, abs(x_dot) - 0.5) / 0.5
+    return np.array([f1, f2, f3, f4, f5], dtype=np.float32)
+
+# 2) Modell initialisieren (noch untrainiert)
+model = LogisticRegression()
+
+# 3) Platzhalter für Trainingsdaten (müssen vorher gesammelt werden)
+#    X_train: Array der Form (N_samples, 5)
+#    y_train: Array der Form (N_samples,), Werte 0 oder 1
+# Beispiel (Dummy):
+# X_train = np.array([[0.0, 0.0, 0.0, 0.0, 0.0],
+#                     [1.0, 0.5, 0.2, 0.1, 0.8],
+#                     ...])
+# y_train = np.array([0, 1, ...])
+
+# 4) Training (einfacher Aufruf, sobald X_train und y_train gefüllt sind)
+# model.fit(X_train, y_train)
+
+# 5) Risiko-Vorhersage für neuen Zustand (funktioniert auch untrainiert, gibt aber Unsinn zurück)
+def predict_risk(state: np.ndarray, action: float) -> float:
+    phi = compute_features(state, action).reshape(1, -1)  # Form (1,5)
+    # model.predict_proba liefert [[P(safe), P(risky)]]
+    return model.predict_proba(phi)[0, 1]
+
+# Beispiel:
+state_example = np.array([0.05, 0.3, 0.1, 0.5])
+action_example = 0.95
+# risk_prob = predict_risk(state_example, action_example)
+# print(f"Risiko-Wahrscheinlichkeit: {risk_prob:.2f}")
+
+# example:
+state_example = np.array([2.0, 0.3, 0.1, 0.5])
+action_example = 0.95
+phi_example = compute_features(state_example, action_example)
+print("Feature-Vektor:", phi_example)

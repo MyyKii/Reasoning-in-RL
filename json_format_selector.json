@@ -1,0 +1,11 @@
+{
+    "state": [p, p_dot, theta, theta_dot],     // or [theta, theta_dot] / [sinθ, cosθ, θdot]
+    "candidates": [
+      {"a":  a1, "label": r1},
+      {"a":  a2, "label": r2},
+      {"a":  a3, "label": r3}
+    ],
+    "executed_index": 1,                        // true action?
+    "t": 12345                                  // timestep
+  }
+  

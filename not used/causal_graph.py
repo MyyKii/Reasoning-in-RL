@@ -2,8 +2,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
-
-print("running")
+#debugging
+#print("running")
 
 class CausalGraph:
     def __init__(self):

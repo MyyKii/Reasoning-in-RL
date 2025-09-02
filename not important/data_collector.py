@@ -27,14 +27,14 @@ def collect_data(env, num_episodes=50, max_steps=200):
     for episode in range(num_episodes):
         obs, _ = env.reset()
         for step in range(max_steps):
-            # Aktion: Zufällig oder heuristisch
+            # Aktion: Zufällig 
             action = env.action_space.sample() 
             
             next_obs, reward, terminated, truncated, info = env.step(action)
             done = terminated or truncated
 
             # Format: [x, theta, x_dot, theta_dot]
-            state = next_obs.tolist()
+            state = next_obs.tolist() # or just obs.tolist() if you want the initial state
             act = float(action[0])  
 
             # Automatisches Label (kannst du auch durch input() ersetzen)

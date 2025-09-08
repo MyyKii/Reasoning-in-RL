@@ -2,100 +2,121 @@
 # -*- coding: utf-8 -*-
 
 """
-Kleiner Data-Collector für MuJoCo InvertedPendulum.
-Schreibt Zeilen im Format:
-x  x_dot  theta  theta_dot  target_action
+Data-Collector für MuJoCo InvertedPendulum mit PPO-Teacher.
 
-Kompatibel mit np.loadtxt(...).
+Schreibt pro Schritt eine Zeile (whitespace-getrennt):
+x  theta  x_dot  theta_dot  action
+
+- Die ersten 4 Spalten sind die Eingaben für ANFIS (in ENV-REIHENFOLGE).
+- Die 5. Spalte ist das Ziel/Label (PPO-Aktion), auf die ANFIS trainiert.
 """
 
 import os
+import sys
+from pathlib import Path
 import numpy as np
 
 # Gymnasium bevorzugt; Fallback zu Gym
 try:
     import gymnasium as gym
-except Exception:  # pragma: no cover
+except Exception:
     import gym  # type: ignore
 
+# Stable Baselines 3 (für PPO)
+from stable_baselines3 import PPO
 
-# --- Observation -> Features ---
+
+# --------- Observation -> Features (ENV-REIHENFOLGE) ---------
 # Laut Gymnasium-Doku (InvertedPendulum):
-# obs[0]=x, obs[1]=theta, obs[2]=x_dot, obs[3]=theta_dot
-def extract_inputs(obs: np.ndarray) -> np.ndarray:
+# obs = [ x, theta, x_dot, theta_dot ]  (shape = (4,))
+def extract_inputs_env_order(obs: np.ndarray) -> np.ndarray:
     o = np.asarray(obs, dtype=np.float32)
     assert o.ndim == 1 and o.size >= 4, f"Unerwartete Observation-Form: {o.shape}"
-    x       = o[0]
-    theta   = o[1]
-    x_dot   = o[2]
-    th_dot  = o[3]
-    # Reihenfolge für Datei: x, x_dot, theta, theta_dot
-    return np.array([x, x_dot, theta, th_dot], dtype=np.float32)
+    x, theta, x_dot, theta_dot = o[0], o[1], o[2], o[3]
+    return np.array([x, theta, x_dot, theta_dot], dtype=np.float32)
 
 
-# --- Simple Teacher-Policy (PD auf Winkel) ---
-def teacher_action(features: np.ndarray, kp: float = 10.0, kd: float = 2.0) -> float:
-    # features: [x, x_dot, theta, theta_dot]
-    theta   = float(features[2])
-    th_dot  = float(features[3])
-    return -kp * theta - kd * th_dot
-
-
-def map_to_action_space(y: float, action_space):
-    # Kontinuierlich (Box): clip auf Bounds, Form anpassen
-    if hasattr(action_space, "shape"):
-        lo = np.float32(action_space.low[0]) if np.ndim(action_space.low) else np.float32(action_space.low)
-        hi = np.float32(action_space.high[0]) if np.ndim(action_space.high) else np.float32(action_space.high)
-        u = np.clip(np.float32(y), lo, hi)
-        # Form: (action_dim,) – InvertedPendulum hat 1D Aktion
-        return np.array([u], dtype=np.float32)
-    # Diskret (zur Not): Vorzeichen-Schwelle
-    return int(y > 0.0)
-
-
+# --------- Hilfen für Datei-Output ---------
 def append_row_txt(path: str, row) -> None:
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "a", encoding="utf-8") as f:
         f.write(" ".join(f"{v:.6f}" for v in row) + "\n")
 
 
-def collect(env_id: str = "InvertedPendulum-v4",
-            steps: int = 1000,
-            out_path: str = "data/AnfisTrainingSet.txt",
-            seed: int = 0) -> None:
+# --------- Hauptsammler ---------
+def collect(
+    env_id: str = "InvertedPendulum-v4",
+    model_path: str = "ppo_invertedpendulum.zip",
+    steps: int = 1000,
+    out_path: str = "data/trainingSet.txt",
+    seed: int = 0,
+    deterministic: bool = True,
+) -> None:
+    """
+    Lädt PPO-Policy, sammelt (obs -> action) Paare und schreibt:
+    x, theta, x_dot, theta_dot, action
+    """
+    # 1) Env bauen
     env = gym.make(env_id)
+
+    # 2) PPO laden
+    if not Path(model_path).exists():
+        print(f"FEHLER: PPO-Modell nicht gefunden: {model_path}", file=sys.stderr)
+        sys.exit(1)
+    model = PPO.load(model_path)
+
     try:
-        # reset-API: Gymnasium -> (obs, info), Gym -> obs
+        # 3) Reset (Gymnasium -> (obs, info), Gym -> obs)
         r = env.reset(seed=seed) if "seed" in env.reset.__code__.co_varnames else env.reset()
         obs = r[0] if isinstance(r, tuple) else r
 
+        # 4) Sammel-Loop
         for _ in range(steps):
-            x_vec = extract_inputs(obs)               # (4,)
-            y     = teacher_action(x_vec)             # scalar target
-            append_row_txt(out_path, [*x_vec, y])     # 5 Werte
+            # a) Inputs extrahieren (nur fürs Loggen/ANFIS)
+            x_vec = extract_inputs_env_order(obs)  # (4,)
 
-            action = map_to_action_space(y, env.action_space)
+            # b) PPO-Action vorhersagen (PPO bekommt die ORIGINAL-obs)
+            #    Achtung: Form der Action meist (1,)
+            action, _ = model.predict(obs, deterministic=deterministic)
+            action = np.asarray(action, dtype=np.float32)
+            # sanity: falls Scalar, in (1,) verwandeln
+            if action.ndim == 0:
+                action = np.array([action], dtype=np.float32)
+
+            # c) Zeile schreiben: [x, theta, x_dot, theta_dot, action]
+            append_row_txt(out_path, [*x_vec, float(action[0])])
+
+            # d) Schritt im Env
             step_out = env.step(action)
-
-            # Gymnasium: obs, reward, terminated, truncated, info
             if len(step_out) == 5:
                 obs, _, terminated, truncated, _ = step_out
                 done = bool(terminated or truncated)
-            else:  # Gym: obs, reward, done, info
+            else:
                 obs, _, done, _ = step_out
 
             if done:
                 r = env.reset()
                 obs = r[0] if isinstance(r, tuple) else r
+
     finally:
         env.close()
 
-    # Minimal-Check: laden & Form ausgeben
+    # 5) Minimaler Check: laden & Form prüfen
     ts = np.loadtxt(out_path)
     print(f"[OK] Gespeichert: {ts.shape[0]} Zeilen in {out_path}")
     print(f"[OK] Shape geladen: {ts.shape}  (erwarte: N x 5)")
-    print("Erste Zeile:", ts[0].tolist() if ts.ndim == 2 and ts.shape[0] > 0 else "—")
+    if ts.ndim == 2 and ts.shape[0] > 0:
+        print("Erste Zeile:", ts[0].tolist())
 
 
+# --------- CLI ---------
 if __name__ == "__main__":
-    collect()
+    # Minimaler, fester Aufruf – passe bei Bedarf an:
+    collect(
+        env_id="InvertedPendulum-v4",
+        model_path="ppo_invertedpendulum.zip",   # <- Name deiner gespeicherten PPO-Datei
+        steps=1000,
+        out_path="data/AnfisTrainingSetRaw.txt",
+        seed=0,
+        deterministic=True,
+    )

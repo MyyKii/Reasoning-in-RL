@@ -119,10 +119,10 @@ def main():
     parser.add_argument(
         "--data",
         type=Path,
-        default=Path("trainingSet.txt"),
+        default=Path("AnfisTrainingSet.txt"),
         help="Pfad zur Trainingsdatei (TXT, whitespace-delimited). Standard: ./trainingSet.txt",
     )
-    parser.add_argument("--epochs", type=int, default=20, help="Anzahl Trainings-Epochen.")
+    parser.add_argument("--epochs", type=int, default=10, help="Anzahl Trainings-Epochen.")
     parser.add_argument("--seed", type=int, default=42, help="Zufallsseed (Reproduzierbarkeit).")
     parser.add_argument("--no-show", action="store_true", help="Plots nicht anzeigen (nur evtl. speichern).")
     parser.add_argument(

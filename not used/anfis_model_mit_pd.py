@@ -17,7 +17,6 @@ def extract_inputs(obs: np.ndarray) -> np.ndarray:
     theta   = o[1]
     x_dot   = o[2]
     th_dot  = o[3]
-    # Reihenfolge für Datei: x, x_dot, theta, theta_dot
     return np.array([x, x_dot, theta, th_dot], dtype=np.float32)
 
 
@@ -30,7 +29,6 @@ def teacher_action(features: np.ndarray, kp: float = 10.0, kd: float = 2.0) -> f
 
 
 def map_to_action_space(y: float, action_space):
-    # Kontinuierlich (Box): clip auf Bounds, Form anpassen
     if hasattr(action_space, "shape"):
         lo = np.float32(action_space.low[0]) if np.ndim(action_space.low) else np.float32(action_space.low)
         hi = np.float32(action_space.high[0]) if np.ndim(action_space.high) else np.float32(action_space.high)

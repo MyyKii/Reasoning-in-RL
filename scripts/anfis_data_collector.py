@@ -16,13 +16,11 @@ import sys
 from pathlib import Path
 import numpy as np
 
-# Gymnasium bevorzugt; Fallback zu Gym
 try:
     import gymnasium as gym
 except Exception:
-    import gym  # type: ignore
+    import gym  
 
-# Stable Baselines 3 (für PPO)
 from stable_baselines3 import PPO
 
 
@@ -36,19 +34,17 @@ def extract_inputs_env_order(obs: np.ndarray) -> np.ndarray:
     return np.array([x, theta, x_dot, theta_dot], dtype=np.float32)
 
 
-# --------- Hilfen für Datei-Output ---------
 def append_row_txt(path: str, row) -> None:
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "a", encoding="utf-8") as f:
         f.write(" ".join(f"{v:.6f}" for v in row) + "\n")
 
 
-# --------- Hauptsammler ---------
 def collect(
     env_id: str = "InvertedPendulum-v4",
     model_path: str = "ppo_invertedpendulum.zip",
     steps: int = 1000,
-    out_path: str = "data/trainingSet.txt",
+    out_path: str = "data/AnfisTrainingSetPPO.txt",
     seed: int = 0,
     deterministic: bool = True,
 ) -> None:
@@ -56,21 +52,18 @@ def collect(
     Lädt PPO-Policy, sammelt (obs -> action) Paare und schreibt:
     x, theta, x_dot, theta_dot, action
     """
-    # 1) Env bauen
+
     env = gym.make(env_id)
 
-    # 2) PPO laden
     if not Path(model_path).exists():
         print(f"FEHLER: PPO-Modell nicht gefunden: {model_path}", file=sys.stderr)
         sys.exit(1)
     model = PPO.load(model_path)
 
     try:
-        # 3) Reset (Gymnasium -> (obs, info), Gym -> obs)
         r = env.reset(seed=seed) if "seed" in env.reset.__code__.co_varnames else env.reset()
         obs = r[0] if isinstance(r, tuple) else r
 
-        # 4) Sammel-Loop
         for _ in range(steps):
             # a) Inputs extrahieren (nur fürs Loggen/ANFIS)
             x_vec = extract_inputs_env_order(obs)  # (4,)
@@ -116,7 +109,7 @@ if __name__ == "__main__":
         env_id="InvertedPendulum-v4",
         model_path="ppo_invertedpendulum.zip",   # <- Name deiner gespeicherten PPO-Datei
         steps=1000,
-        out_path="data/AnfisTrainingSetRaw.txt",
+        out_path="data/AnfisTrainingSetPPO.txt",
         seed=0,
         deterministic=True,
     )

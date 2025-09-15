@@ -1,7 +1,6 @@
 import lazuardy_anfis.anfis as anfis
 import lazuardy_anfis.membershipfunction as membershipfunction
 
-
 import os
 
 import numpy as np
@@ -9,7 +8,7 @@ import numpy as np
 #from . import anfis, membershipfunction
 
 root_data_path = "/Users/tommykiss/mujoco-py/data"
-training_set = root_data_path + "/trainingSet.txt"
+training_set = root_data_path + "/AnfisTrainingSet.txt"
 
 ts = np.loadtxt(training_set, usecols=[1, 2, 3])
 X = ts[:, 0:2]
@@ -48,6 +47,9 @@ print("Plotting errors")
 anf.plotErrors()
 print("Plotting results")
 anf.plotResults()
+
+
+
 
 """import torch
 import anfis

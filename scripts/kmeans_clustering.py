@@ -60,7 +60,8 @@ def do_kmeans_clustering(file_path: str, n: int):
     plt.xlabel("PCA Component 1")
     plt.ylabel("PCA Component 2")
     plt.show()
- 
+
+
     return clusters
  
  

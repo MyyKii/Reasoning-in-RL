@@ -25,11 +25,11 @@ def do_kmeans_clustering(file_path: str, n: int, use_cols: int = 4):
     if not np.isfinite(X).all():
         raise ValueError("NaN/inf detected in the selected feature columns.")
 
-    # --- Scale (important for distance-based methods like K-Means) ---
+    # --- Scale ---
     scaler = StandardScaler()
     Xs = scaler.fit_transform(X)
 
-    # --- K-Means (robust init) ---
+    # --- K-Means  ---
     kmeans = KMeans(n_clusters=n, random_state=42, n_init=20)
     labels = kmeans.fit_predict(Xs)
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     input_data_path = root_path + "/AnfisTrainingSetPPO.txt"
 
     # If you want to use all 5 numbers per line, call with use_cols=5
-    clusters = do_kmeans_clustering(input_data_path, n=3, use_cols=4)
+    clusters = do_kmeans_clustering(input_data_path, n=6, use_cols=4)
 
     for mean, points in clusters.items():
         print(f"Cluster mean (orig units): {mean}")

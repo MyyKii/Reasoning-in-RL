@@ -117,53 +117,148 @@ def maybe_plot(model, show=True, out: Path | None = None):
     if show: plt.show()
     plt.close()
 
+    # --- NEW: JSON -> MFSpec ------------------------------------------------------
+def mf_spec_from_json(json_path: Path) -> MFSpec:
+    """
+    Erwartet JSON aus do_kmeans_clustering_for_anfis(..., export_json_path=...):
+    {
+      "scaler": {"mean":[...], "scale":[...]},
+      "rules": [{"centers":[...], "sigmas":[...]}, ...],  # len == K
+      "meta": {"K":int, "use_cols":int, ...}
+    }
+    Baut pro Eingangsvariable die K Gauß-MFs aus centers/sigmas im *skalierten* Raum.
+    """
+    import json
+    with open(json_path, "r") as f:
+        cfg = json.load(f)
+
+    rules = cfg["rules"]
+    K = len(rules)
+    centers = np.array([r["centers"] for r in rules], dtype=float)  # (K, d)
+    sigmas  = np.array([r["sigmas"]  for r in rules], dtype=float)  # (K, d)
+    K_, d = centers.shape
+    assert K_ == K and sigmas.shape == (K, d), "JSON centers/sigmas Dimension mismatch"
+
+    # pro Feature j: K MFs (mean = centers[k,j], sigma = sigmas[k,j])
+    mfs_per_input: list[list[list]] = []
+    for j in range(d):
+        mfs_j = []
+        for k in range(K):
+            mu = float(centers[k, j])
+            s  = float(max(sigmas[k, j], 1e-6))
+            mfs_j.append(["gaussmf", {"mean": mu, "sigma": s}])
+        # Optional: nach Mittelwert sortieren (stabilere Regelreihenfolge/Plots)
+        mfs_j.sort(key=lambda it: it[1]["mean"])
+        mfs_per_input.append(mfs_j)
+
+    return MFSpec(mfs_per_input=mfs_per_input)
+
+# --- NEW: X-Skalierung via JSON-Scaler ----------------------------------------
+def apply_json_scaler_X(X: np.ndarray, scaler_dict: dict) -> np.ndarray:
+    mean = np.array(scaler_dict["mean"], dtype=float)
+    scale = np.array(scaler_dict["scale"], dtype=float)
+    if X.shape[1] != mean.shape[0]:
+        raise ValueError(f"Scaler dims mismatch: X has {X.shape[1]} cols, scaler has {mean.shape[0]}")
+    return (X - mean) / (scale + 1e-12)
+
+
 def main():
+    print("started")  #debug
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", type=Path, default=Path("data/AnfisTrainingSetPPO.txt"))
     ap.add_argument("--epochs", type=int, default=30)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--no-show", action="store_true")
     ap.add_argument("--save-plots", type=Path, default=None)
+
+    # NEW: KMeans-JSON (überschreibt die interne KMeans-MF-Generierung)
+    ap.add_argument("--kmeans-json", type=Path, default=None,
+                    help="Pfad zur JSON aus kmeans_clustering_v3.py (enthält scaler, centers, sigmas)")
     args = ap.parse_args()
 
     np.random.seed(args.seed)
+    print("Lade Daten...") #debug
 
     # 1) Daten
     X, y = load_data(args.data)
     (Xtr, ytr), (Xte, yte) = train_test_split(X, y, test_ratio=0.2, seed=args.seed)
 
-    # 2) Normalisierung (auf TRAIN fitten!)
-    stats = fit_normalizer(Xtr, ytr)
-    Xtr_n = apply_normalizer_X(Xtr, stats)
-    Xte_n = apply_normalizer_X(Xte, stats)
-    # y wird im Modell normalisiert gelernt:
-    ytr_n = (ytr - stats["y_mean"]) / stats["y_std"]
+    # 2) Normalisierung
+    # 2a) Wenn JSON gegeben: X mit JSON-Scaler normalisieren (Konsistenz zu den MF-Parametern!)
+    if args.kmeans_json is not None:
+        import json
+        with open(args.kmeans_json, "r") as f:
+            j = json.load(f)
+        scaler = j["scaler"]
+        # nur X normalisieren; y-Stats separat (für Rückskalieren der Targets)
+        Xtr_n = apply_json_scaler_X(Xtr, scaler)
+        Xte_n = apply_json_scaler_X(Xte, scaler)
+        y_stats = {"y_mean": ytr.mean(), "y_std": ytr.std() + 1e-8}
+        ytr_n = (ytr - y_stats["y_mean"]) / y_stats["y_std"]
 
-    # 3) MFs automatisch aus KMeans (auf NORMALISIERTEN Inputs!)
-    K = 3  # starte mit 3; später 2/4 testen
-    MF_FROM_KMEANS = mf_spec_from_kmeans_grid(Xtr_n, K=K)
+        # 3) MFs direkt aus JSON (bereits im skalierten Raum)
+        MF_FROM_JSON = mf_spec_from_json(args.kmeans_json)
+        mf_spec = MF_FROM_JSON
+
+        # --- Debug: Membership Functions inspizieren ---
+        for j, mfs in enumerate(mf_spec.mfs_per_input[:2]):  # nur die ersten 2 Inputs
+            print(f"Input {j}:")
+            for name, prm in mfs:
+                print("  ", prm)
+# ------------------------------------------------
+
+    else:
+        # 2b) Fallback: interner Normalizer+KMeans wie gehabt
+        stats = fit_normalizer(Xtr, ytr)
+        Xtr_n = apply_normalizer_X(Xtr, stats)
+        Xte_n = apply_normalizer_X(Xte, stats)
+        ytr_n = (ytr - stats["y_mean"]) / stats["y_std"]
+
+        # 3) MFs automatisch aus KMeans (auf NORMALISIERTEN Inputs!)
+        K = 3
+        mf_spec = mf_spec_from_kmeans_grid(Xtr_n, K=K)
+
+        # Für konsistente spätere Denorms:
+        y_stats = {"y_mean": stats["y_mean"], "y_std": stats["y_std"]}
 
     # 4) Modell
-    model = build_model(Xtr_n, ytr_n, MF_FROM_KMEANS)
+    model = build_model(Xtr_n, ytr_n, mf_spec)
+    print("Modell erstellt.") #debug
+    """
+    ytr_n_col = ytr_n.reshape(-1, 1)
 
+    if hasattr(model, "trainHybridJangOffLine"):
+        # Klassischer ANFIS-Train (Hybrid Jang) – nutzt LS für Consequents + GD für MFs
+        model.trainHybridJangOffLine(Xtr_n, ytr_n_col, epochs=args.epochs)
+    elif hasattr(model, "fit"):
+        # Falls das Paket eine fit-API bietet
+        model.fit(Xtr_n, ytr_n_col, epochs=args.epochs)
+    else:
+        raise RuntimeError("ANFIS: Keine Trainingsmethode gefunden (trainHybridJangOffLine/fit).")
+    """
 
-    # 5) Vorhersagen (zurückskalieren) & Metriken
-    # Auf TRAIN:
+    # (Optional) Training: falls euer lazuardy_anfis.ANFIS Fit/Train-Methoden hat:
+    # model.fit(epochs=args.epochs)  # <- nur falls unterstützt
+
+    # 5) Vorhersagen & Metriken
     yhat_tr_n = model.predict(Xtr_n).reshape(-1)
-    yhat_tr = denorm_y(yhat_tr_n, stats)
+    print("1") #debug
+    yhat_tr = denorm_y(yhat_tr_n, y_stats)
+    print("2") #debug
     mse_tr, rmse_tr, mae_tr = metrics(ytr, yhat_tr)
 
-    # Auf TEST:
+    print("Vorhersagen auf Testdaten...") #debug
+
     yhat_te_n = model.predict(Xte_n).reshape(-1)
-    yhat_te = denorm_y(yhat_te_n, stats)
+    yhat_te = denorm_y(yhat_te_n, y_stats)
     mse_te, rmse_te, mae_te = metrics(yte, yhat_te)
 
     print("\n=== Ergebnisse ===")
     print(f"Train: MSE={mse_tr:.4f}  RMSE={rmse_tr:.4f}  MAE={mae_tr:.4f}")
     print(f"Test : MSE={mse_te:.4f}  RMSE={rmse_te:.4f}  MAE={mae_te:.4f}\n")
 
-    # 6) Plots (optional)
     maybe_plot(model, show=not args.no_show, out=args.save_plots)
+
 
 if __name__ == "__main__":
     main()

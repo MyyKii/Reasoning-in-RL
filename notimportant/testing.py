@@ -85,7 +85,18 @@ def reverse(String):
     print(str)
     return str
         
+def fifty(arr, correct_answer):
+    import random
+    random.shuffle(arr)
+    arr.remove(correct_answer)
+    print(f"Shuffled array: {arr}")
+    arr.pop()
+    arr.pop()
+    arr = arr + [correct_answer]
+    arr.sort()
+    print(arr)
 
-if __name__ == "__main__":
-   help(print())
+
+
+    fifty(["A","B","C", "D"], "D")
 

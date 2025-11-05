@@ -99,8 +99,11 @@ def build_model(Xn, yn, mf_spec: MFSpec):
 def metrics(y_true, y_pred):
     err = y_true - y_pred
     mse = float(np.mean(err**2))
-    rmse = float(np.sqrt(mse))
+    rmse = float(np.sqrt(mse))  
     mae = float(np.mean(np.abs(err)))
+    #ss_res = np.sum((y_true - y_pred) ** 2)               
+    #ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)     
+    #r2 = 1 - (ss_res / ss_tot)
     return mse, rmse, mae
 
 def maybe_plot(model, show=True, out: Path | None = None):
@@ -153,7 +156,6 @@ def mf_spec_from_json(json_path: Path) -> MFSpec:
 
     return MFSpec(mfs_per_input=mfs_per_input)
 
-# --- NEW: X-Skalierung via JSON-Scaler ----------------------------------------
 def apply_json_scaler_X(X: np.ndarray, scaler_dict: dict) -> np.ndarray:
     mean = np.array(scaler_dict["mean"], dtype=float)
     scale = np.array(scaler_dict["scale"], dtype=float)

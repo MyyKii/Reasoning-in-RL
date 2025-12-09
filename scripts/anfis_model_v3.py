@@ -6,6 +6,8 @@ import numpy as np
 from sklearn.cluster import KMeans
 import lazuardy_anfis.anfis as anfis
 import lazuardy_anfis.membershipfunction as membershipfunction
+from utils.anfis_io import make_preprocess_dict, save_anfis_bundle
+
 
 @dataclass
 class MFSpec:
@@ -175,6 +177,7 @@ def main():
     # NEW: KMeans-JSON (überschreibt die interne KMeans-MF-Generierung)
     ap.add_argument("--kmeans-json", type=Path, default=None,
                     help="Pfad zur JSON aus kmeans_clustering_v3.py (enthält scaler, centers, sigmas)")
+    ap.add_argument("--bundle-out", type=Path, default=None, help="Basispfad für Anfis-Bundle, z.B. model/anfis_controller")
     args = ap.parse_args()
 
     np.random.seed(args.seed)
@@ -224,19 +227,25 @@ def main():
 
     # 4) Modell
     model = build_model(Xtr_n, ytr_n, mf_spec)
-    print("Modell erstellt.") #debug
-    """
-    ytr_n_col = ytr_n.reshape(-1, 1)
+    print("Modell erstellt.")  # debug
+
+    # y in Spaltenform brauchst du für lazuardy_anfis nicht explizit,
+    # das Modell hat X und y schon im Konstruktor bekommen.
+    # ytr_n_col = ytr_n.reshape(-1, 1)
 
     if hasattr(model, "trainHybridJangOffLine"):
         # Klassischer ANFIS-Train (Hybrid Jang) – nutzt LS für Consequents + GD für MFs
-        model.trainHybridJangOffLine(Xtr_n, ytr_n_col, epochs=args.epochs)
+        print(f"Starte ANFIS-Training mit {args.epochs} Epochen...")
+        model.trainHybridJangOffLine(epochs=args.epochs)
+
     elif hasattr(model, "fit"):
-        # Falls das Paket eine fit-API bietet
-        model.fit(Xtr_n, ytr_n_col, epochs=args.epochs)
+        # Fallback, falls die lazuardy-Version eine .fit-API besitzt
+        print(f"Starte ANFIS-Training (fit) mit {args.epochs} Epochen...")
+        model.fit(epochs=args.epochs)
+
     else:
         raise RuntimeError("ANFIS: Keine Trainingsmethode gefunden (trainHybridJangOffLine/fit).")
-    """
+
 
     # (Optional) Training: falls euer lazuardy_anfis.ANFIS Fit/Train-Methoden hat:
     # model.fit(epochs=args.epochs)  # <- nur falls unterstützt
@@ -259,6 +268,32 @@ def main():
     print(f"Test : MSE={mse_te:.4f}  RMSE={rmse_te:.4f}  MAE={mae_te:.4f}\n")
 
     maybe_plot(model, show=not args.no_show, out=args.save_plots)
+
+        # --- NEU: ANFIS-Bundle speichern --------------------------------------
+    if args.bundle_out is not None:
+        # Preprocessing-Info abhängig davon, ob KMeans-JSON genutzt wurde
+        if args.kmeans_json is not None:
+            # scaler stammt aus der JSON und hat Keys "mean", "scale"
+            preprocess = make_preprocess_dict("json", scaler)
+        else:
+            # stats stammt aus fit_normalizer und hat X_mean/X_std
+            preprocess = make_preprocess_dict(
+                "stats",
+                {"X_mean": stats["X_mean"], "X_std": stats["X_std"]},
+            )
+
+        meta = {
+            "data_path": str(args.data),
+            "kmeans_json": str(args.kmeans_json) if args.kmeans_json is not None else None,
+            "epochs": int(args.epochs),
+            "seed": int(args.seed),
+        }
+
+        save_anfis_bundle(args.bundle_out, model, preprocess, y_stats, meta)
+        print(
+            f"ANFIS-Bundle gespeichert unter: "
+            f"\"{args.bundle_out}.model.pkl\" und \"{args.bundle_out}.bundle.pkl\""
+        )
 
 
 if __name__ == "__main__":

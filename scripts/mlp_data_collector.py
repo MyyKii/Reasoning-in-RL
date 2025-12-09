@@ -7,7 +7,7 @@ import os
 DATA_PATH = "collected_data.json"
 NUM_EPISODES = 10000
 MAX_STEPS = 500
-LABEL_MODE = "continuos"  # "binary" oder "continuous"
+LABEL_MODE = "continuos"  # "binary" or "continuous"
 
 # Thresholds for labels
 THRESHOLD_THETA = 0.15

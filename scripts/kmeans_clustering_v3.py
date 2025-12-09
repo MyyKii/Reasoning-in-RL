@@ -146,7 +146,7 @@ if __name__ == "__main__":
     root_path = "/Users/tommykiss/mujoco-py/data"
     input_data_path = root_path + "/AnfisTrainingSetPPO.txt"
     res = do_kmeans_clustering_for_anfis(
-        input_data_path, n=12, use_cols=4,
+        input_data_path, n=5, use_cols=4,
         sigma_method="featurewise_nn", beta=0.55,
         plot=True,
         export_json_path= "/Users/tommykiss/mujoco-py/data/kmeans_v3.json"  # z.B. root_path + "/anfis_rules_k12.json"

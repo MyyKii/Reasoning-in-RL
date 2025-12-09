@@ -31,7 +31,7 @@ MODELS_DIR = ROOT / "models"
 
 PPO_MODEL_PATH = ROOT / "ppo_invertedpendulum.zip"
 ANFIS_DATA_PATH = DATA_DIR / "AnfisTrainingSetPPO.txt"
-KMEANS_JSON_PATH = DATA_DIR / "kmeans_rules.json"
+KMEANS_JSON_PATH = DATA_DIR / "kmeans_v3.json"
 ANFIS_BUNDLE_BASE = MODELS_DIR / "anfis_controller"
 MLP_DATA_PATH = ROOT / "collected_data.json"
 MLP_MODEL_PATH = ROOT / "mlp_model.pth"

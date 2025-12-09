@@ -96,7 +96,21 @@ def fifty(arr, correct_answer):
     arr.sort()
     print(arr)
 
+def workin(total_time, speed_time):
+    speed_time = speed_time - 1
+    total_time_hours = total_time * 24
+    saved_time = 0
+    while total_time_hours >= 24:
+        saved_time = speed_time + saved_time
+        total_time_hours = total_time_hours - 24
+        saved_time_days = saved_time / 24
+        print('saved time:', saved_time_days)
+        print('total time left:', total_time_hours)
+    
 
 
-    fifty(["A","B","C", "D"], "D")
+
+
+if __name__ == "__main__":
+    workin(14.5, 8)
 

@@ -73,5 +73,4 @@ for epoch in range(100):
             acc = (preds.eq(y_test_t).sum() / y_test_t.shape[0]).item()
         print(f"Epoch {epoch+1}, Loss: {loss.item():.4f}, Test-Acc: {acc:.2f}")
 
-# ======= Fertig trainiertes Modell speichern =======
 torch.save(model.state_dict(), "mlp_model.pth")

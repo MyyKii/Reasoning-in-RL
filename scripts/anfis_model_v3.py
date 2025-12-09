@@ -4,7 +4,6 @@ from pathlib import Path
 import argparse
 import numpy as np
 from sklearn.cluster import KMeans
-import numpy as np
 import lazuardy_anfis.anfis as anfis
 import lazuardy_anfis.membershipfunction as membershipfunction
 

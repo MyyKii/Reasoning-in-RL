@@ -102,12 +102,10 @@ def collect(
         print("Erste Zeile:", ts[0].tolist())
 
 
-# --------- CLI ---------
 if __name__ == "__main__":
-    # Minimaler, fester Aufruf – passe bei Bedarf an:
     collect(
         env_id="InvertedPendulum-v4",
-        model_path="ppo_invertedpendulum.zip",   # <- Name deiner gespeicherten PPO-Datei
+        model_path="ppo_invertedpendulum.zip",
         steps=1000,
         out_path="data/AnfisTrainingSetPPO.txt",
         seed=0,

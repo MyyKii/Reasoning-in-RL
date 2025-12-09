@@ -10,8 +10,9 @@
 `mujoco-py` allows using MuJoCo from Python 3.
 
 This library has been updated to be compatible with MuJoCo version 2.1 released on 2021-10-18.
+"""
 
-
+python3 scripts/anfis_model_v3.py --data data/AnfisTrainingSetPPO.txt --kmeans-json data/kmeans_v3.json
 ## Synopsis
 
 ### Requirements
@@ -175,3 +176,15 @@ This is somewhat dependent on internal OpenAI infrastructure at the moment, but 
 - Peter Welinder
 - Wojciech Zaremba
 - Jerry Tworek
+
+
+
+## New Readme:
+
+run `python3 ppo.py` to create ppo_invertedpendulum.zip
+
+`anfis_data_collctor_v2` uses ppo_invertedpendulum.zip to collect data in `AnfisTrainingSetPPO.txt`
+
+This set can be used in `kmeans_clustering_v3.py` to cluster the means and create `kmeans_v3.json`
+
+`anfis_model_v3.py` is the final model 

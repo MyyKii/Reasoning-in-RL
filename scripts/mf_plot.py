@@ -38,8 +38,8 @@ elif use_cols != D:
     print(f"Warnung: meta.use_cols={use_cols}, aber Daten haben D={D}. Verwende D={D}.")
     use_cols = D
 
-# ---------- Plot 1: Mittelwerte + Fehlerbalken je Feature ----------
-# Für jedes Feature: x-Achse = Cluster (0..K-1), y = Center, Fehler = Sigma
+# ---------- Plot 1: mean and error bars ----------
+# For every feature, plot centers with error bars (sigmas)
 """for feat in range(use_cols):
     plt.figure(figsize=(8, 4.5))
     x = np.arange(K_detected)
@@ -58,17 +58,16 @@ elif use_cols != D:
 # ---------- Plot 2: Fuzzy-Membership-Curves ----------
 # For each feature, plot K Gaussian curves (centers/sigmas)
 def gaussian(x, c, s):
-    # numerisch stabil, s>0
     s = np.maximum(s, 1e-12)
     return np.exp(-0.5 * ((x - c) / s)**2)
 
 for feat in range(use_cols):
     c_feat = centers[:, feat]
     s_feat = sigmas[:, feat]
-    # sinnvolle x-Achse automatisch ableiten:
+    # useful x-range
     x_min = np.min(c_feat - 4*s_feat)
     x_max = np.max(c_feat + 4*s_feat)
-    # Falls sigmas sehr klein/groß sind, trotzdem Puffer geben
+    # if sigmas are zero or inf/nan, use default range
     if not np.isfinite(x_min) or not np.isfinite(x_max) or x_min == x_max:
         x_min, x_max = -2.0, 2.0
     xs = np.linspace(x_min, x_max, 600)
@@ -76,7 +75,7 @@ for feat in range(use_cols):
     plt.figure(figsize=(8, 4.5))
     for k in range(K_detected):
         ys = gaussian(xs, c_feat[k], s_feat[k])
-        # Jede Kurve separat plotten (keine Styles/Farben explizit setzen)
+        # plot every curve seperatly for legend
         plt.plot(xs, ys, label=f"C{k}: c={c_feat[k]:.3f}, σ={s_feat[k]:.3f}")
     plt.title(f"Feature {feat} – Fuzzy Membership Functions (Gauss)")
     plt.xlabel("x")
@@ -89,7 +88,6 @@ for feat in range(use_cols):
     plt.savefig(out_path, dpi=150)
     plt.show()
 
-# ---------- Optional: Zusammenfassung ausgeben ----------
 print(f"K (Clusters): {K_detected} | Features: {use_cols}")
 if meta:
     print("Meta:", meta)

@@ -5,8 +5,8 @@ import os
 
 # config
 DATA_PATH = "collected_data.json"
-NUM_EPISODES = 100
-MAX_STEPS = 400
+NUM_EPISODES = 10000
+MAX_STEPS = 500
 LABEL_MODE = "continuos"  # "binary" oder "continuous"
 
 # Thresholds for labels
@@ -50,7 +50,6 @@ def collect_data(env, num_episodes=NUM_EPISODES, max_steps=MAX_STEPS):
     for episode in range(num_episodes):
         obs, _ = env.reset()
         for step in range(max_steps):
-            # Aktion zufällig wählen
             action = env.action_space.sample()
 
             next_obs, reward, terminated, truncated, info = env.step(action)
@@ -72,7 +71,6 @@ def collect_data(env, num_episodes=NUM_EPISODES, max_steps=MAX_STEPS):
 
     save_data(data)
 
-    # Statistik
     print(f"{len(data)} Datenpunkte gespeichert in {DATA_PATH}")
     labels = [d["label"] for d in data]
     if LABEL_MODE == "binary":

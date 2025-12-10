@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 """
 Data-Collector für MuJoCo InvertedPendulum mit PPO-Teacher.
 
@@ -25,7 +22,7 @@ from pathlib import Path
 import argparse
 import numpy as np
 
-# Gymnasium bevorzugen, fallback auf gym
+# Gymnasium prefered, fallback auf gym
 try:
     import gymnasium as gym
     GYMNASIUM = True
@@ -50,7 +47,7 @@ def append_row_txt(path: str, row, precision: int = 6) -> None:
 
 def collect(
     env_id: str = "InvertedPendulum-v4",
-    model_path: str = "ppo_invertedpendulum.zip",
+    model_path: str = "models/ppo_invertedpendulum.zip",
     steps: int = 1000,
     out_path: str = "data/AnfisTrainingSetPPO.txt",
     seed: int | None = 0,
@@ -62,10 +59,8 @@ def collect(
     Lädt PPO-Policy, sammelt (next_obs -> action)-Paare und schreibt:
     x, theta, x_dot, theta_dot, action
     """
-    # --- Env erstellen
     env = gym.make(env_id)
 
-    # --- Modell laden
     if not Path(model_path).exists():
         print(f"FEHLER: PPO-Modell nicht gefunden: {model_path}", file=sys.stderr)
         sys.exit(1)
@@ -89,10 +84,6 @@ def collect(
         prev = None
         same_cnt = 0
         
-
-
-        # vor der Schleife bleibt wie gehabt (obs ist bereits eine Kopie)
-
         for t in range(steps):
             # Zustand für das Log einfrieren (KOPIE!)
             obs_for_log = np.array(obs, dtype=np.float64, copy=True)

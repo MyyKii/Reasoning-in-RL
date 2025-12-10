@@ -48,7 +48,7 @@ def transform_X_with(preprocess: Dict[str, Any], X: np.ndarray) -> np.ndarray:
         raise ValueError(f"Unknown preprocess mode: {mode}")
 
 
-# ------- Speichern / Laden -----------------------------------------------
+# ------- Save / Load -----------------------------------------------
 def save_anfis_bundle(
     path: Path,
     model: Any,

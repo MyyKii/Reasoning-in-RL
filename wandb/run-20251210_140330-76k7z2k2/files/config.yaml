@@ -1,0 +1,59 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            mmqhtmamac4slpooytk5f31rr8m3u9mf:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "13958643712"
+                codePath: scripts/run_pipeline.py
+                codePathLocal: scripts/run_pipeline.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "227723505664"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: 6bee5eacde88346ac4fbcf73afe02afb9b3b9b90
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: Air-von-Tommy.fritz.box
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/run_pipeline.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2025-12-10T13:03:30.929793Z"
+                writerId: mmqhtmamac4slpooytk5f31rr8m3u9mf
+        m: []
+        python_version: 3.13.1
+        t:
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+env_name:
+    value: InvertedPendulum-v4
+label_mode:
+    value: continuous
+max_steps:
+    value: 500
+num_episodes:
+    value: 10000
+threshold_theta:
+    value: 0.15
+threshold_theta_dot:
+    value: 1

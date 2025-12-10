@@ -1,0 +1,89 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            3xtvae6wqq82t9i87d6rj7ek0kv5vkr4:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "13958643712"
+                codePath: scripts/mlp_model.py
+                codePathLocal: scripts/mlp_model.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "227806707712"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: 74910aff753d97d1fb15cfa6d2a5a8251a192eea
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: Air-von-Tommy.fritz.box
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/mlp_model.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2025-12-10T16:49:01.995232Z"
+                writerId: 3xtvae6wqq82t9i87d6rj7ek0kv5vkr4
+        m: []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+            "2":
+                - 1
+                - 5
+                - 53
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+batch_size:
+    value: 54452
+batch_type:
+    value: Full-Batch
+epochs:
+    value: 1000
+hidden_activation:
+    value: ReLU
+hidden_layers:
+    value:
+        - 16
+        - 8
+input_dim:
+    value: 5
+learning_rate:
+    value: 0.001
+loss_type:
+    value: BCELoss
+model_type:
+    value: MLP
+num_samples:
+    value: 60503
+optimizer:
+    value: Adam
+output_activation:
+    value: Sigmoid
+output_dim:
+    value: 1
+test_size:
+    value: 6051
+train_size:
+    value: 54452
+training_data_path:
+    value: data/mlp_training_data.json

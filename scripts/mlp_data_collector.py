@@ -16,12 +16,10 @@ ENV_NAME = "InvertedPendulum-v4"
 NUM_EPISODES = 10000
 MAX_STEPS = 500
 
-# "binary" or "continuous"
-LABEL_MODE = "continuous"
+LABEL_MODE = "binary"  # "binary" or "continuous"
 
-# Thresholds für Labels
-THRESHOLD_THETA = 0.15
-THRESHOLD_THETA_DOT = 1.0
+THRESHOLD_THETA = 0.2
+THRESHOLD_THETA_DOT = 1.2
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +52,8 @@ def compute_label(obs: np.ndarray, mode: str) -> float:
         return 1.0 if risky else 0.0
 
     elif mode == "continuous":
-        # Beispiel: je weiter über dem Threshold, desto höher das Label
         theta_score = max(0.0, abs(theta) - THRESHOLD_THETA)
         theta_dot_score = max(0.0, abs(theta_dot) - THRESHOLD_THETA_DOT)
-        # einfache Kombination
         return float(theta_score + 0.1 * theta_dot_score)
 
     else:
@@ -145,14 +141,15 @@ def collect_data(env: gym.Env) -> None:
                 action_value = float(action_env)
 
             # 4) Label aus aktuellem Zustand berechnen (wie in deiner Referenz-JSON)
-            label = compute_label_from_state(obs)
+            #label = compute_label_from_state(obs)
+            label = compute_label(obs, LABEL_MODE)
 
-            # 5) Datensatz-Eintrag speichern
+            # 5) Save Data
             data.append(
                 {
-                    "state": obs.tolist(),       # [x, x_dot, theta, theta_dot]
-                    "action": action_value,      # Skalar
-                    "label": float(label),       # Skalar
+                    "state": obs.tolist(),
+                    "action": action_value,
+                    "label": float(label),
                 }
             )
 

@@ -1,5 +1,5 @@
 import mlp_data_collector
-
+import ppo
 import logging
 from pathlib import Path
 
@@ -10,7 +10,7 @@ def setup_logging(log_level: int = logging.INFO, log_to_file: bool = False) -> N
     - Optional zusätzlich in eine Log-Datei.
     """
     #log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    log_format = "%(levelname)s - %(message)s"
+    log_format = "%(message)s"
 
     handlers = [logging.StreamHandler()]
 
@@ -37,6 +37,11 @@ def start_pipeline():
     import mlp_model
     mlp_model.train_mlp_model()
     logging.info(f' MLP Model saved in {mlp_model.MLP_MODEL_PATH}')
+    # ------------------------------ Run PPO ------------------------------------------
+    logging.info("Step 3: Training PPO Agent...")
+    ppo.run_ppo_teacher()
+    logging.info(f' PPO Model saved in {ppo.PPO_MODEL_PATH}')
+    logging.info("Pipeline completed successfully.")
     
 
 if __name__ == "__main__":

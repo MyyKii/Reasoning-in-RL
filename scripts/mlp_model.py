@@ -5,8 +5,10 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import json
 
-# ======= Daten laden =======
-with open("collected_data.json", "r") as f:
+MLP_MODEL_PATH = "mlp_model.pth"
+
+# ======= load data =======
+with open("data/mlp_training_data.json", "r") as f:
     raw_data = json.load(f)
 
 
@@ -73,4 +75,4 @@ for epoch in range(100):
             acc = (preds.eq(y_test_t).sum() / y_test_t.shape[0]).item()
         print(f"Epoch {epoch+1}, Loss: {loss.item():.4f}, Test-Acc: {acc:.2f}")
 
-torch.save(model.state_dict(), "mlp_model.pth")
+torch.save(model.state_dict(), MLP_MODEL_PATH)

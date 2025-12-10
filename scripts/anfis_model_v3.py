@@ -252,9 +252,7 @@ def main():
 
     # 5) Vorhersagen & Metriken
     yhat_tr_n = model.predict(Xtr_n).reshape(-1)
-    print("1") #debug
     yhat_tr = denorm_y(yhat_tr_n, y_stats)
-    print("2") #debug
     mse_tr, rmse_tr, mae_tr = metrics(ytr, yhat_tr)
 
     print("Vorhersagen auf Testdaten...") #debug

@@ -38,7 +38,6 @@ def load_data(p: Path):
     y = ts[:, 4]
     return X, y
 
-
 def mf_spec_from_kmeans_grid(Xn: np.ndarray, K: int = 3) -> MFSpec:
     """
     Baut pro Eingangsvariable K Gauss-MFs aus 4D-KMeans-Zentren.
@@ -71,7 +70,6 @@ def mf_spec_from_kmeans_grid(Xn: np.ndarray, K: int = 3) -> MFSpec:
         mfs_per_input.append(mfs_j)
 
     return MFSpec(mfs_per_input=mfs_per_input)
-
 
 def train_test_split(X, y, test_ratio=0.2, seed=42):
     rng = np.random.default_rng(seed)
@@ -113,15 +111,16 @@ def maybe_plot(model, show=True, out: Path | None = None):
     if out:
         out.mkdir(parents=True, exist_ok=True)
         plt.savefig(out / "errors.png", dpi=150, bbox_inches="tight")
-    if show: plt.show()
+    if show:
+        plt.show()
     plt.close()
     model.plotResults()
     if out:
         plt.savefig(out / "results.png", dpi=150, bbox_inches="tight")
-    if show: plt.show()
+    if show:
+        plt.show()
     plt.close()
 
-    # --- NEW: JSON -> MFSpec ------------------------------------------------------
 def mf_spec_from_json(json_path: Path) -> MFSpec:
     """
     Erwartet JSON aus do_kmeans_clustering_for_anfis(..., export_json_path=...):

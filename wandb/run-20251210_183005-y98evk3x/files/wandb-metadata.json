@@ -1,0 +1,37 @@
+{
+  "os":  "macOS-14.5-arm64-arm-64bit-Mach-O",
+  "python":  "CPython 3.13.1",
+  "startedAt":  "2025-12-10T17:30:05.369076Z",
+  "program":  "/Users/tommykiss/mujoco-py/scripts/ppo_with_logging.py",
+  "codePath":  "scripts/ppo_with_logging.py",
+  "codePathLocal":  "scripts/ppo_with_logging.py",
+  "git":  {
+    "remote":  "git@github.com:MyyKii/Reasoning-in-RL.git",
+    "commit":  "61064f250ea8709486ce1436d010bc96415c5d07"
+  },
+  "email":  "t.kiss@campus.lmu.de",
+  "root":  "/Users/tommykiss/mujoco-py",
+  "host":  "Air-von-Tommy.fritz.box",
+  "executable":  "/Users/tommykiss/mujoco-py/venv/bin/python",
+  "cpu_count":  8,
+  "cpu_count_logical":  8,
+  "disk":  {
+    "/":  {
+      "total":  "245107195904",
+      "used":  "227943927808"
+    }
+  },
+  "memory":  {
+    "total":  "17179869184"
+  },
+  "apple":  {
+    "name":  "Apple M2",
+    "ecpuCores":  4,
+    "pcpuCores":  4,
+    "gpuCores":  8,
+    "memoryGb":  16,
+    "swapTotalBytes":  "13958643712",
+    "ramTotalBytes":  "17179869184"
+  },
+  "writerId":  "et65mof6vqwhci3isem68xchkk63x50y"
+}

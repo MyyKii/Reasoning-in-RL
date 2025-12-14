@@ -13,6 +13,9 @@ TRAINING_DATA_PATH = "data/mlp_training_data.json"
 EPOCHS = 1000
 LEARNING_RATE = 0.3
 
+#TODO: Important notice: mlp_data_collector creates binary labels now. 
+#TODO: Can be changed but needs adjustments in mlp_model if desired. 
+#TODO: Are Feature correct?
 
 def compute_features(state, action):
     """

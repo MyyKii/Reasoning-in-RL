@@ -1,0 +1,58 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            ltie3pmr8z1fzu6sq4q7250qmhc1utyt:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "13958643712"
+                codePath: scripts/ppo_with_logging.py
+                codePathLocal: scripts/ppo_with_logging.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "227956969472"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: 61064f250ea8709486ce1436d010bc96415c5d07
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: Air-von-Tommy.fritz.box
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/ppo_with_logging.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2025-12-10T17:37:57.233147Z"
+                writerId: ltie3pmr8z1fzu6sq4q7250qmhc1utyt
+        m: []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 2
+                - 13
+                - 16
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+algo:
+    value: PPO
+env_id:
+    value: InvertedPendulum-v4
+policy:
+    value: MlpPolicy
+total_timesteps:
+    value: 100000

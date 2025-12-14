@@ -1,0 +1,59 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            xw4o0m007705sbt8y65bj8emnv8hnsg3:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "9663676416"
+                codePath: scripts/mlp_data_collector.py
+                codePathLocal: scripts/mlp_data_collector.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "220600754176"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: 61064f250ea8709486ce1436d010bc96415c5d07
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: MacBook-Air-von-Tommy.local
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/mlp_data_collector.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2025-12-14T21:35:00.516240Z"
+                writerId: xw4o0m007705sbt8y65bj8emnv8hnsg3
+        m: []
+        python_version: 3.13.1
+        t:
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+env_name:
+    value: InvertedPendulum-v4
+label_mode:
+    value: binary
+max_steps:
+    value: 500
+num_episodes:
+    value: 10000
+threshold_theta:
+    value: 0.2
+threshold_theta_dot:
+    value: 1.2

@@ -33,6 +33,10 @@ except Exception:
 from stable_baselines3 import PPO
 
 
+OUT_PATH = "data/AnfisTrainingSetPPO.txt"
+PPO_MODEL_PATH = "models/ppo_invertedpendulum.zip"
+ENVIRONMENT = "InvertedPendulum-v4"
+
 # ------------------------------- I/O ---------------------------------
 
 def append_row_txt(path: str, row, precision: int = 6) -> None:
@@ -46,10 +50,10 @@ def append_row_txt(path: str, row, precision: int = 6) -> None:
 # ------------------------------ Collect ------------------------------
 
 def collect(
-    env_id: str = "InvertedPendulum-v4",
-    model_path: str = "models/ppo_invertedpendulum.zip",
-    steps: int = 1000,
-    out_path: str = "data/AnfisTrainingSetPPO.txt",
+    env_id: str = ENVIRONMENT,
+    model_path: str = PPO_MODEL_PATH,
+    steps: int = 10000,
+    out_path: str = OUT_PATH,
     seed: int | None = 0,
     deterministic: bool = True,
     precision: int = 6,
@@ -132,8 +136,8 @@ def collect(
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser(description="Data-Collector für InvertedPendulum mit PPO-Teacher")
     ap.add_argument("--env_id", default="InvertedPendulum-v4", help="Gym/Gymnasium Env-ID")
-    ap.add_argument("--model_path", default="ppo_invertedpendulum.zip", help="Pfad zum PPO-Modell (.zip)")
-    ap.add_argument("--steps", type=int, default=1000, help="Anzahl Schritte")
+    ap.add_argument("--model_path", default=PPO_MODEL_PATH, help="Pfad zum PPO-Modell (.zip)")
+    ap.add_argument("--steps", type=int, default=10000, help="Anzahl Schritte")
     ap.add_argument("--out_path", default="data/AnfisTrainingSetPPO.txt", help="Ausgabedatei")
     ap.add_argument("--seed", type=int, default=0, help="Seed (None für keinen)")
     ap.add_argument("--deterministic", action="store_true", help="Deterministische Policy (SB3 predict)")

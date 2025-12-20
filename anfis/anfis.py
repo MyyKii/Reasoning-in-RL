@@ -102,6 +102,8 @@ class ANFIS:
                         t.append(dE_dAlpha[x][y][z])
 
             eta = k / np.abs(np.sum(t))
+            print("k:", k, "sum_t:", float(np.sum(t)), "eta:", float(eta))
+
 
             if(np.isinf(eta)):
                 eta = k

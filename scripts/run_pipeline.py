@@ -1,5 +1,7 @@
 import mlp_data_collector
+import anfis_data_collector
 import ppo
+import ppo_with_logging
 import logging
 from pathlib import Path
 
@@ -39,9 +41,15 @@ def start_pipeline():
     logging.info(f' MLP Model saved in {mlp_model.MLP_MODEL_PATH}')
     # ------------------------------ Run PPO ------------------------------------------
     logging.info("Step 3: Training PPO Agent...")
-    ppo.run_ppo_teacher()
+    #ppo_with_logging()
+    #ppo.py
     logging.info(f' PPO Model saved in {ppo.PPO_MODEL_PATH}')
     logging.info("Pipeline completed successfully.")
+    # ------------------------------ Collecting Expert Data ------------------------------------------
+    logging.info("Collecting Expert Data with PPO Agent...")
+    anfis_data_collector() # could add parameters if needed
+    logging.info(f' Expert Data saved in {anfis_data_collector.OUT_PATH}')
+
     
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ from stable_baselines3 import PPO
 
 from wandb_utils import init_wandb_run, log_metrics, finish_wandb_run
 
-MODEL_PATH = "models/ppo_invertedpendulum.zip"
+PPO_MODEL_PATH = "models/ppo_invertedpendulum.zip"
 TIMESTEPS = 100_000
 EPISODES_EVAL = 10
 
@@ -43,8 +43,8 @@ def train_ppo_inverted_pendulum(
     model.learn(total_timesteps=total_timesteps)
     logger.info("PPO-Training abgeschlossen.")
 
-    logger.info("Speichere PPO-Modell nach '%s'...", MODEL_PATH)
-    model.save(MODEL_PATH)
+    logger.info("Speichere PPO-Modell nach '%s'...", PPO_MODEL_PATH)
+    model.save(PPO_MODEL_PATH)
     logger.info("Modell gespeichert.")
 
     # === einfache Evaluation zum Vergleich / Logging ===
@@ -88,7 +88,6 @@ def train_ppo_inverted_pendulum(
     eval_env.close()
 
     return model, mean_return, std_return
-
 
 
 if __name__ == "__main__":

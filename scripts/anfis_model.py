@@ -4,7 +4,22 @@ from pathlib import Path
 import argparse
 import numpy as np
 from sklearn.cluster import KMeans
+
+import os
+import sys
+
+# vendor/ relativ zum Projekt-Root oder relativ zu dieser Datei:
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # goes from scripts/ to project root
+VENDOR_DIR = os.path.join(BASE_DIR, "vendor")
+sys.path.insert(0, VENDOR_DIR)
+
+import lazuardy_anfis
 import lazuardy_anfis.anfis as anfis
+
+print("USING package:", lazuardy_anfis.__file__)
+print("USING anfis.py:", anfis.__file__)
+
+
 import lazuardy_anfis.membershipfunction as membershipfunction
 from utils.anfis_io import make_preprocess_dict, save_anfis_bundle
 
@@ -48,7 +63,7 @@ def mf_spec_from_kmeans_grid(Xn: np.ndarray, K: int = 3) -> MFSpec:
     d = centers.shape[1]
 
     mfs_per_input: list[list[list]] = []
-    for j in range(d):                      # für jede der d Dimensionen
+    for j in range(d):
         mus = np.sort(centers[:, j])        # K Mittelwerte sortieren
 
         # sigmas: am Rand Abstand zum einzigen Nachbarn; in der Mitte halber Nachbarabstand
@@ -185,6 +200,11 @@ def main():
     # 1) Daten
     X, y = load_data(args.data)
     (Xtr, ytr), (Xte, yte) = train_test_split(X, y, test_ratio=0.2, seed=args.seed)
+
+    print("X shape:", X.shape)
+    print("Y shape:", y.shape)
+    print("Y min/max/mean/std:", y.min(), y.max(), y.mean(), y.std())
+
 
     # 2) Normalisierung
     # 2a) Wenn JSON gegeben: X mit JSON-Scaler normalisieren (Konsistenz zu den MF-Parametern!)

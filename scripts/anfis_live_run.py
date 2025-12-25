@@ -31,7 +31,7 @@ try:
     import gymnasium as gym
     _GYMNASIUM = True
 except Exception:
-    import gym  # type: ignore
+    import gym
     _GYMNASIUM = False
 
 
@@ -99,13 +99,13 @@ def run_live(
     # --- Env ---
     make_kwargs = {}
     if render:
-        make_kwargs["render_mode"] = "human"  # gymnasium
+        make_kwargs["render_mode"] = "human"
 
     env = gym.make(env_id, **make_kwargs)
     action_low = np.asarray(env.action_space.low, dtype=float).reshape(-1)
     action_high = np.asarray(env.action_space.high, dtype=float).reshape(-1)
 
-    # --- W&B (optional) ---
+    # --- W&B ---
     run = None
     if wandb_project:
         cfg = {

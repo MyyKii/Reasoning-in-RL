@@ -183,7 +183,7 @@ def main():
     print("started")  #debug
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", type=Path, default=Path("data/AnfisTrainingSetPPO.txt"))
-    ap.add_argument("--epochs", type=int, default=30)
+    ap.add_argument("--epochs", type=int, default=5)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--no-show", action="store_true")
     ap.add_argument("--save-plots", type=Path, default=None)
@@ -191,7 +191,7 @@ def main():
     # NEW: KMeans-JSON (überschreibt die interne KMeans-MF-Generierung)
     ap.add_argument("--kmeans-json", type=Path, default=None,
                     help="Pfad zur JSON aus kmeans_clustering_v3.py (enthält scaler, centers, sigmas)")
-    ap.add_argument("--bundle-out", type=Path, default=None, help="Basispfad für Anfis-Bundle, z.B. model/anfis_controller")
+    ap.add_argument("--bundle-out", type=Path, default="models/anfis_controller", help="Basispfad für Anfis-Bundle, z.B. model/anfis_controller")
     args = ap.parse_args()
 
     np.random.seed(args.seed)

@@ -286,7 +286,7 @@ def main():
 
     maybe_plot(model, show=not args.no_show, out=args.save_plots)
 
-        # --- NEU: ANFIS-Bundle speichern --------------------------------------
+    # --- NEU: ANFIS-Bundle speichern --------------------------------------
     if args.bundle_out is not None:
         # Preprocessing-Info abhängig davon, ob KMeans-JSON genutzt wurde
         if args.kmeans_json is not None:

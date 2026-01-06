@@ -1,0 +1,78 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            pestczo5y8wxu86w2yt0iome3o4muw2a:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "13958643712"
+                args:
+                    - --env-id
+                    - InvertedPendulum-v4
+                    - --bundle
+                    - models/anfis_controller_dagger1
+                    - --episodes
+                    - "20"
+                    - --max-steps
+                    - "5000"
+                    - --seed
+                    - "0"
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --run-name
+                    - anfis_live_seed0
+                codePath: scripts/anfis_live_run.py
+                codePathLocal: scripts/anfis_live_run.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "223788298240"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: ec35684d841f96c726d0341d2358b697002be372
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: Air-von-Tommy.fritz.box
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/anfis_live_run.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-06T23:15:15.733391Z"
+                writerId: pestczo5y8wxu86w2yt0iome3o4muw2a
+        m: []
+        python_version: 3.13.1
+        t:
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+bundle_base:
+    value: models/anfis_controller_dagger1
+bundle_meta:
+    value:
+        data_path: data/AnfisTrainingSet_Mixed.txt
+        epochs: 25
+        kmeans_json: data/kmeans_dagger1.json
+        seed: 42
+env_id:
+    value: InvertedPendulum-v4
+episodes:
+    value: 20
+max_steps:
+    value: 5000
+seed:
+    value: 0

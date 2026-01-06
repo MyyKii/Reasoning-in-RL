@@ -1,0 +1,88 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            6gwydbiscikxh2ikx1v9gznxg3fdrr3v:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "13958643712"
+                args:
+                    - --env-id
+                    - InvertedPendulum-v4
+                    - --model-path
+                    - models/ppo_invertedpendulum.zip
+                    - --eval-only
+                    - --episodes
+                    - "20"
+                    - --max-steps
+                    - "5000"
+                    - --seed
+                    - "0"
+                    - --deterministic
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --run-name
+                    - ppo_eval_seed0
+                codePath: scripts/ppo_with_logging.py
+                codePathLocal: scripts/ppo_with_logging.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "223808974848"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: ec35684d841f96c726d0341d2358b697002be372
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: Air-von-Tommy.fritz.box
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/ppo_with_logging.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-06T23:27:00.024234Z"
+                writerId: 6gwydbiscikxh2ikx1v9gznxg3fdrr3v
+        m: []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+algo:
+    value: PPO
+deterministic:
+    value: true
+env_id:
+    value: InvertedPendulum-v4
+episodes:
+    value: 20
+eval_only:
+    value: true
+log_steps:
+    value: false
+max_steps:
+    value: 5000
+model_path:
+    value: models/ppo_invertedpendulum.zip
+seed:
+    value: 0
+total_timesteps:
+    value: 100000

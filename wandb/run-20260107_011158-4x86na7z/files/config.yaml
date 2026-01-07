@@ -1,0 +1,37 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        m: []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+            "3":
+                - 13
+                - 16
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+bundle_base:
+    value: models/anfis_controller_dagger1
+bundle_meta:
+    value:
+        data_path: data/AnfisTrainingSet_Mixed.txt
+        epochs: 25
+        kmeans_json: data/kmeans_dagger1.json
+        seed: 42
+delta:
+    value: 0.15
+env_id:
+    value: InvertedPendulum-v4
+episodes:
+    value: 20
+max_steps:
+    value: 5000
+mlp_path:
+    value: models/mlp_model.pth
+seed:
+    value: 0

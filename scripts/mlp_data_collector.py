@@ -32,29 +32,25 @@ def compute_label_from_state(state: np.ndarray) -> float:
     return min(1.0, abs(theta_dot))
 
 
-def compute_label(obs: np.ndarray, mode: str) -> float:
+def compute_label(obs: np.ndarray, mode: str, terminated: bool | None = None) -> float:
     """
-    Berechnet ein Label aus der Beobachtung.
-    Hier ein Beispiel:
-      - binary: 1 wenn "riskant", sonst 0
-      - continuous: kontinuierliches Maß für "Gefährlichkeit"
-
-    Hinweis: Für InvertedPendulum ist die Beobachtung typischerweise:
-      [x, x_dot, theta, theta_dot]
-    Das musst du ggf. mit deiner Umgebung abgleichen.
+    InvertedPendulum Observation order (Gymnasium):
+      [x, theta, x_dot, theta_dot]
     """
-    # Beispiel: wir nehmen an, Index 2 = theta, Index 3 = theta_dot
-    theta = obs[2]
-    theta_dot = obs[3]
+    x, theta, x_dot, theta_dot = [float(v) for v in obs[:4]]
 
     if mode == "binary":
-        risky = (abs(theta) > THRESHOLD_THETA) or (abs(theta_dot) > THRESHOLD_THETA_DOT)
-        return 1.0 if risky else 0.0
+        # Am saubersten: terminated als Ground-Truth nehmen (env definiert unhealthy über |theta|>0.2).
+        if terminated is not None:
+            return 1.0 if bool(terminated) else 0.0
+        # Fallback:
+        return 1.0 if abs(theta) > THRESHOLD_THETA else 0.0
 
     elif mode == "continuous":
-        theta_score = max(0.0, abs(theta) - THRESHOLD_THETA)
-        theta_dot_score = max(0.0, abs(theta_dot) - THRESHOLD_THETA_DOT)
-        return float(theta_score + 0.1 * theta_dot_score)
+        # Normiertes Risiko in [0,1] (hilft enorm, damit risk_plus/risk_minus NICHT flach werden)
+        risk_theta = min(1.0, abs(theta) / THRESHOLD_THETA)           # THRESHOLD_THETA=0.2 passt zur Env-Definition
+        risk_tdot  = min(1.0, abs(theta_dot) / THRESHOLD_THETA_DOT)   # Skala heuristisch
+        return float(max(risk_theta, 0.25 * risk_tdot))
 
     else:
         raise ValueError(f"Unbekannter LABEL_MODE: {mode}")
@@ -142,16 +138,21 @@ def collect_data(env: gym.Env) -> None:
 
             # 4) Label aus aktuellem Zustand berechnen (wie in deiner Referenz-JSON)
             #label = compute_label_from_state(obs)
-            label = compute_label(obs, LABEL_MODE)
+            label = compute_label(next_obs, LABEL_MODE, terminated=terminated)
+
 
             # 5) Save Data
             data.append(
                 {
                     "state": obs.tolist(),
                     "action": action_value,
+                    "next_state": next_obs.tolist(),
+                    "terminated": bool(terminated),
+                    "truncated": bool(truncated),
                     "label": float(label),
                 }
             )
+
 
             # 6) Zustand & Zähler updaten
             obs = next_obs

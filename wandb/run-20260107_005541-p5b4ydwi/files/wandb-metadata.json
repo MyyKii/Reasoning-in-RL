@@ -1,0 +1,57 @@
+{
+  "os":  "macOS-14.5-arm64-arm-64bit-Mach-O",
+  "python":  "CPython 3.13.1",
+  "startedAt":  "2026-01-06T23:55:41.925898Z",
+  "args":  [
+    "--env-id",
+    "InvertedPendulum-v4",
+    "--bundle",
+    "models/anfis_controller_dagger1",
+    "--mlp-model",
+    "models/mlp_model.pth",
+    "--delta",
+    "0.15",
+    "--episodes",
+    "20",
+    "--max-steps",
+    "5000",
+    "--seed",
+    "0",
+    "--wandb-project",
+    "counterfactual-agents",
+    "--run-name",
+    "anfis_counterfactual_seed0"
+  ],
+  "program":  "/Users/tommykiss/mujoco-py/scripts/counterfactual_live_run.py",
+  "codePath":  "scripts/counterfactual_live_run.py",
+  "codePathLocal":  "scripts/counterfactual_live_run.py",
+  "git":  {
+    "remote":  "git@github.com:MyyKii/Reasoning-in-RL.git",
+    "commit":  "21b59a3a3603a8cf71f443f8812f67c90aa3e358"
+  },
+  "email":  "t.kiss@campus.lmu.de",
+  "root":  "/Users/tommykiss/mujoco-py",
+  "host":  "Air-von-Tommy.fritz.box",
+  "executable":  "/Users/tommykiss/mujoco-py/venv/bin/python",
+  "cpu_count":  8,
+  "cpu_count_logical":  8,
+  "disk":  {
+    "/":  {
+      "total":  "245107195904",
+      "used":  "223825293312"
+    }
+  },
+  "memory":  {
+    "total":  "17179869184"
+  },
+  "apple":  {
+    "name":  "Apple M2",
+    "ecpuCores":  4,
+    "pcpuCores":  4,
+    "gpuCores":  8,
+    "memoryGb":  16,
+    "swapTotalBytes":  "13958643712",
+    "ramTotalBytes":  "17179869184"
+  },
+  "writerId":  "tb450fou8q60lry56yrz8g07pi6wx243"
+}

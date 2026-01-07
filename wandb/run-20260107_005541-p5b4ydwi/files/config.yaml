@@ -1,0 +1,94 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            tb450fou8q60lry56yrz8g07pi6wx243:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "13958643712"
+                args:
+                    - --env-id
+                    - InvertedPendulum-v4
+                    - --bundle
+                    - models/anfis_controller_dagger1
+                    - --mlp-model
+                    - models/mlp_model.pth
+                    - --delta
+                    - "0.15"
+                    - --episodes
+                    - "20"
+                    - --max-steps
+                    - "5000"
+                    - --seed
+                    - "0"
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --run-name
+                    - anfis_counterfactual_seed0
+                codePath: scripts/counterfactual_live_run.py
+                codePathLocal: scripts/counterfactual_live_run.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "223825293312"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: 21b59a3a3603a8cf71f443f8812f67c90aa3e358
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: Air-von-Tommy.fritz.box
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/counterfactual_live_run.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-06T23:55:41.925898Z"
+                writerId: tb450fou8q60lry56yrz8g07pi6wx243
+        m: []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+            "2":
+                - 1
+                - 5
+                - 53
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+bundle_base:
+    value: models/anfis_controller_dagger1
+bundle_meta:
+    value:
+        data_path: data/AnfisTrainingSet_Mixed.txt
+        epochs: 25
+        kmeans_json: data/kmeans_dagger1.json
+        seed: 42
+delta:
+    value: 0.15
+env_id:
+    value: InvertedPendulum-v4
+episodes:
+    value: 20
+max_steps:
+    value: 5000
+mlp_path:
+    value: models/mlp_model.pth
+seed:
+    value: 0

@@ -11,27 +11,35 @@ from wandb_utils import init_wandb_run, log_metrics, finish_wandb_run
 MLP_MODEL_PATH = "models/mlp_model.pth"
 TRAINING_DATA_PATH = "data/mlp_training_data.json"
 EPOCHS = 1000
-LEARNING_RATE = 0.3
+LEARNING_RATE = 1e-3
 
 #TODO: Important notice: mlp_data_collector creates binary labels now. 
 #TODO: Can be changed but needs adjustments in mlp_model if desired. 
-#TODO: Are Feature correct?
+#TODO: Are Features correct?
+
+# Gymnasium InvertedPendulum action range is [-3, 3]
+ACTION_MAX = 3.0
+THETA_LIMIT = 0.2  # env upright/termination scale
 
 def compute_features(state, action):
     """
-    state: array-like with [x, x_dot, theta, theta_dot]
+    state order: [x, theta, x_dot, theta_dot]
     action: float
-    gibt zurück: np.array([f1, f2, f3, f4, f5], dtype=float)
+    returns: np.array([f1..f5], dtype=float32)
     """
-    # x, x_dot, theta, theta_dot = state
-    x, theta, x_dot, theta_dot = state
+    x, theta, x_dot, theta_dot = [float(v) for v in state[:4]]
+    a = float(action)
 
-    f1 = max(0, abs(x) - 0.01) / 0.01 + 0.01
-    f2 = max(0, abs(theta) - 0.05) / 0.05 + 0.01
-    f3 = max(0, abs(x_dot) - 0.05) / 0.05 + 0.01
-    f4 = max(0, abs(theta_dot) - 1.0) / 1.0 + 0.01
-    f5 = max(0, abs(action) - 0.9) / 0.9 + 0.01
-    return np.array([f1, f2, f3, f4, f5], dtype=float)
+    # Normalisierte Magnituden (einfach, robust, und delta wirkt immer über f5)
+    f1 = abs(x) / 1.0
+    f2 = abs(theta) / THETA_LIMIT
+    f3 = abs(x_dot) / 5.0
+    f4 = abs(theta_dot) / 5.0
+    f5 = abs(a) / ACTION_MAX
+
+    feats = np.array([f1, f2, f3, f4, f5], dtype=np.float32)
+    return np.clip(feats, 0.0, 10.0)
+
 
 
 def run_mlp_model():
@@ -144,6 +152,47 @@ def run_mlp_model():
     logger.info(f"MLP model saved to {MLP_MODEL_PATH}")
     finish_wandb_run()
     logger.info("W&B Run beendet.")
+
+
+# --- Inference utilities (für Live-Run / Counterfactual-Agent) ------------------
+
+class RiskMLP(nn.Module):
+    """Architektur muss exakt der Trainings-Definition entsprechen."""
+    def __init__(self, input_size: int = 5):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_size, 16),
+            nn.ReLU(),
+            nn.Linear(16, 8),
+            nn.ReLU(),
+            nn.Linear(8, 1),
+            nn.Sigmoid(),
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
+
+def load_risk_mlp(model_path: str = MLP_MODEL_PATH, device: str = "cpu") -> RiskMLP:
+    model = RiskMLP(input_size=5)
+    state = torch.load(model_path, map_location=device)
+    model.load_state_dict(state)
+    model.eval()
+    return model
+
+
+def predict_risk(model: RiskMLP, state, action: float) -> float:
+    """
+    Returns risk in [0,1].
+    state: array-like (wie in mlp_training_data.json gespeichert)
+    action: float
+    """
+    feats = compute_features(state, action).astype(np.float32)
+    x = torch.from_numpy(feats).unsqueeze(0)  # (1,5)
+    with torch.no_grad():
+        y = model(x).reshape(-1)[0].item()
+    return float(y)
+
 
 
 if __name__ == "__main__":

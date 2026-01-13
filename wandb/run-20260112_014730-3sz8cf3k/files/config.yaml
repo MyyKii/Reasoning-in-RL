@@ -1,0 +1,108 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            plz3wl1svowy4dz0q7ymvzrjr75agoth:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "10737418240"
+                args:
+                    - --env-id
+                    - InvertedPendulum-v4
+                    - --bundle
+                    - models/anfis_controller_dagger1
+                    - --mlp-model
+                    - models/mlp_model.pth
+                    - --delta
+                    - "0.15"
+                    - --episodes
+                    - "20"
+                    - --max-steps
+                    - "5000"
+                    - --seed
+                    - "0"
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --wandb-group
+                    - dagger_seed0
+                    - --wandb-tags
+                    - counterfactual,live,seed0
+                    - --run-name
+                    - cf_live_seed0
+                    - --log-every
+                    - "1"
+                codePath: scripts/counterfactual_live_run_improved.py
+                codePathLocal: scripts/counterfactual_live_run_improved.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "220279783424"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: d08a895dc288a3e93a7db77ea87b50a1b3c110ae
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: MacBook-Air-von-Tommy.local
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/counterfactual_live_run_improved.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-12T00:47:30.293599Z"
+                writerId: plz3wl1svowy4dz0q7ymvzrjr75agoth
+        m: []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+                - 5
+                - 53
+            "2":
+                - 1
+                - 5
+                - 53
+            "3":
+                - 2
+                - 13
+                - 15
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+bundle_base:
+    value: models/anfis_controller_dagger1
+bundle_meta:
+    value:
+        data_path: data/AnfisTrainingSet_Mixed.txt
+        epochs: 25
+        kmeans_json: data/kmeans_dagger1.json
+        seed: 42
+choice_labels:
+    value:
+        - minus
+        - base
+        - plus
+delta:
+    value: 0.15
+env_id:
+    value: InvertedPendulum-v4
+episodes:
+    value: 20
+log_every:
+    value: 1
+max_steps:
+    value: 5000
+mlp_path:
+    value: models/mlp_model.pth
+seed:
+    value: 0

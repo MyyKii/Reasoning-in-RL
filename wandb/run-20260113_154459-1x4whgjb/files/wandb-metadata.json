@@ -1,0 +1,38 @@
+{
+  "os":  "macOS-14.5-arm64-arm-64bit-Mach-O",
+  "python":  "CPython 3.13.1",
+  "startedAt":  "2026-01-13T14:44:59.163563Z",
+  "args":  [
+    "--data",
+    "data/AnfisTrainingSet_PPO.txt",
+    "--epochs",
+    "5",
+    "--seed",
+    "0",
+    "--kmeans-json",
+    "data/kmeans_dagger0.json",
+    "--bundle-out",
+    "models/anfis_controller_dagger0",
+    "--no-show",
+    "--wandb-project",
+    "counterfactual-agents",
+    "--group",
+    "dagger_seed0",
+    "--run-name",
+    "train_d0",
+    "--tags",
+    "seed0,dagger,iter0"
+  ],
+  "program":  "/Users/tommykiss/mujoco-py/scripts/anfis_model.py",
+  "codePath":  "scripts/anfis_model.py",
+  "codePathLocal":  "scripts/anfis_model.py",
+  "git":  {
+    "remote":  "git@github.com:MyyKii/Reasoning-in-RL.git",
+    "commit":  "40c6b2be1c919c2770cd8004943003aaf0aba345"
+  },
+  "email":  "t.kiss@campus.lmu.de",
+  "root":  "/Users/tommykiss/mujoco-py",
+  "host":  "MacBook-Air-von-Tommy.local",
+  "executable":  "/Users/tommykiss/mujoco-py/venv/bin/python",
+  "writerId":  "xifpb5amreer6gdjjmp4bw6tfqvc88qx"
+}

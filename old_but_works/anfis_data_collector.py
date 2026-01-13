@@ -9,25 +9,19 @@ x  theta  x_dot  theta_dot  action_label
   auch wenn die Umgebung ggf. von ANFIS gesteuert wird (DAgger-Lite).
 
 Modi:
-- behavior=ppo:         env.step(PPO), log(PPO)
-- behavior=ppo_noise:   env.step(PPO + noise), log(PPO)
-- behavior=anfis:       env.step(ANFIS), log(PPO)            <-- DAgger-Lite
-- behavior=anfis_noise: env.step(ANFIS + noise), log(PPO)    <-- DAgger-Lite + Exploration
-
+- behavior=ppo:       env.step(PPO), log(PPO)
+- behavior=ppo_noise: env.step(PPO + noise), log(PPO)
+- behavior=anfis:     env.step(ANFIS), log(PPO)            <-- DAgger-Lite
+- behavior=anfis_noise: env.step(ANFIS + noise), log(PPO)  <-- DAgger-Lite + Exploration
 Optional:
 - teacher_mix in [0,1]: mit Wahrscheinlichkeit teacher_mix wird PPO als Behavior genutzt,
   ansonsten der gewählte Behavior-Controller (ANFIS/ANFIS+noise). Label bleibt PPO.
-
-W&B Logging (optional):
-- Aktivieren mit: --wandb-project <name>
-- Step-level throttled via --log-every (default 1000)
 """
 
 from __future__ import annotations
 
 import os
 import sys
-import time
 from pathlib import Path
 import argparse
 import numpy as np
@@ -91,7 +85,7 @@ def predict_anfis_action(
 
 def collect(
     env_id: str = "InvertedPendulum-v4",
-    ppo_model_path: str = "models/ppo_seed0.zip",
+    ppo_model_path: str = "models/ppo_invertedpendulum.zip",
     steps: int = 1000,
     out_path: str = "data/AnfisTrainingSetPPO.txt",
     seed: int | None = 0,
@@ -101,12 +95,6 @@ def collect(
     anfis_bundle: str | None = None,
     noise_std: float = 0.0,
     teacher_mix: float = 0.0,
-    # --- W&B (optional) ---
-    wandb_project: str | None = None,
-    run_name: str | None = None,
-    group: str | None = None,
-    tags: str | None = None,
-    log_every: int = 1000,
 ) -> None:
     """
     Sammelt (state -> teacher_action)-Paare.
@@ -124,46 +112,6 @@ def collect(
     if not (0.0 <= teacher_mix <= 1.0):
         raise ValueError("teacher_mix must be in [0,1]")
 
-    # W&B init (optional)
-    wandb_run = None
-    wandb = None
-    if wandb_project:
-        try:
-            import wandb as _wandb  # type: ignore
-            wandb = _wandb
-        except Exception as e:
-            raise RuntimeError(
-                "wandb ist nicht installiert, aber --wandb-project wurde gesetzt. "
-                "Installiere mit: pip install wandb"
-            ) from e
-
-        tag_list = [t.strip() for t in (tags or "").split(",") if t.strip()]
-        wandb_run = wandb.init(
-            project=wandb_project,
-            name=run_name,
-            group=group,
-            tags=tag_list,
-            config={
-                "env_id": env_id,
-                "ppo_model_path": str(ppo_model_path),
-                "steps": int(steps),
-                "out_path": str(out_path),
-                "seed": seed,
-                "deterministic": bool(deterministic),
-                "precision": int(precision),
-                "behavior": behavior,
-                "anfis_bundle": str(anfis_bundle) if anfis_bundle else None,
-                "noise_std": float(noise_std),
-                "teacher_mix": float(teacher_mix),
-                "log_every": int(log_every),
-            },
-        )
-        # Saubere X-Achse in W&B
-        wandb.define_metric("collector/step")
-        wandb.define_metric("collector/*", step_metric="collector/step")
-
-    t0 = time.time()
-
     env = gym.make(env_id)
     action_low = np.asarray(env.action_space.low, dtype=float).reshape(-1)
     action_high = np.asarray(env.action_space.high, dtype=float).reshape(-1)
@@ -180,10 +128,6 @@ def collect(
         anfis_model, preprocess, y_stats, meta = load_anfis_bundle(Path(anfis_bundle))
 
     rng = np.random.default_rng(seed if seed is not None else None)
-
-    ep_ret = 0.0
-    ep_len = 0
-    ep_idx = 0
 
     try:
         # Reset
@@ -209,10 +153,7 @@ def collect(
                 a_env = a_teacher.copy()
             else:
                 # anfis / anfis_noise
-                a_env = predict_anfis_action(
-                    anfis_model, preprocess, y_stats,
-                    obs_for_log, action_low, action_high
-                )
+                a_env = predict_anfis_action(anfis_model, preprocess, y_stats, obs_for_log, action_low, action_high)
 
             # Optional: noise on behavior action (never on label)
             if behavior.endswith("noise") and noise_std > 0.0 and (not use_teacher):
@@ -221,11 +162,7 @@ def collect(
 
             # --- Log state + teacher label ---
             x, theta, x_dot, theta_dot = obs_for_log[:4]
-            append_row_txt(
-                out_path,
-                [x, theta, x_dot, theta_dot, float(a_teacher[0])],
-                precision=precision,
-            )
+            append_row_txt(out_path, [x, theta, x_dot, theta_dot, float(a_teacher[0])], precision=precision)
 
             # Step
             step_out = env.step(a_env)
@@ -235,54 +172,14 @@ def collect(
             else:
                 next_obs, reward, done, info = step_out
 
-            ep_ret += float(reward)
-            ep_len += 1
-
-            # W&B step logging (throttled)
-            if wandb_run is not None and (t % max(int(log_every), 1) == 0):
-                wandb.log(
-                    {
-                        "collector/step": int(t),
-                        "collector/step_reward": float(reward),
-                        "collector/teacher_action": float(a_teacher[0]),
-                        "collector/behavior_action": float(a_env[0]),
-                        "collector/action_diff": float(a_env[0] - a_teacher[0]),
-                        "collector/use_teacher": int(use_teacher),
-                        "collector/episode": int(ep_idx),
-                    }
-                )
-
             obs = np.array(next_obs, dtype=np.float64, copy=True)
 
             if done:
-                # episode summary
-                if wandb_run is not None:
-                    wandb.log(
-                        {
-                            "collector/step": int(t),
-                            "collector/episode_return": float(ep_ret),
-                            "collector/episode_length": int(ep_len),
-                            "collector/episode": int(ep_idx),
-                        }
-                    )
-
-                ep_ret = 0.0
-                ep_len = 0
-                ep_idx += 1
-
                 r = env.reset()
                 obs = np.array(r[0] if GYMNASIUM else r, dtype=np.float64, copy=True)
 
     finally:
         env.close()
-        if wandb_run is not None:
-            wandb.log(
-                {
-                    "collector/step": int(steps),
-                    "collector/runtime_sec": float(time.time() - t0),
-                }
-            )
-            wandb.finish()
 
     # minimaler Check
     ts = np.loadtxt(out_path)
@@ -308,13 +205,6 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--noise-std", type=float, default=0.0, help="Stddev Gaussian Noise auf Behavior-Action")
     ap.add_argument("--teacher-mix", type=float, default=0.0, help="Wahrscheinlichkeit PPO als Behavior zu nehmen (0..1)")
 
-    # W&B (optional)
-    ap.add_argument("--wandb-project", default=None)
-    ap.add_argument("--run-name", default=None)
-    ap.add_argument("--group", default=None)
-    ap.add_argument("--tags", default=None, help="comma-separated, e.g. seed0,dagger,iter0")
-    ap.add_argument("--log-every", type=int, default=1000, help="W&B logging frequency (steps)")
-
     return ap.parse_args()
 
 
@@ -332,11 +222,6 @@ def main() -> None:
         anfis_bundle=args.anfis_bundle,
         noise_std=args.noise_std,
         teacher_mix=args.teacher_mix,
-        wandb_project=args.wandb_project,
-        run_name=args.run_name,
-        group=args.group,
-        tags=args.tags,
-        log_every=args.log_every,
     )
 
 

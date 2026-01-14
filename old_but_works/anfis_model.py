@@ -8,6 +8,9 @@ from sklearn.cluster import KMeans
 import os
 import sys
 
+import wandb
+
+
 # vendor/ relativ zum Projekt-Root oder relativ zu dieser Datei:
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # goes from scripts/ to project root
 VENDOR_DIR = os.path.join(BASE_DIR, "vendor")
@@ -255,7 +258,37 @@ def main():
     if hasattr(model, "trainHybridJangOffLine"):
         # Klassischer ANFIS-Train (Hybrid Jang) – nutzt LS für Consequents + GD für MFs
         print(f"Starte ANFIS-Training mit {args.epochs} Epochen...")
-        model.trainHybridJangOffLine(epochs=args.epochs)
+        for ep in range(1, args.epochs + 1):
+            model.trainHybridJangOffLine(epochs=1)
+
+            # ---- per-epoch supervised metrics berechnen ----
+            yhat_tr_n = np.asarray(model.predict(Xtr_n)).reshape(-1)
+            yhat_te_n = np.asarray(model.predict(Xte_n)).reshape(-1)
+
+            yhat_tr = yhat_tr_n * float(y_stats["y_std"]) + float(y_stats["y_mean"])
+            yhat_te = yhat_te_n * float(y_stats["y_std"]) + float(y_stats["y_mean"])
+
+            mse_tr, rmse_tr, mae_tr = metrics(ytr, yhat_tr)
+            mse_te, rmse_te, mae_te = metrics(yte, yhat_te)
+
+            # ---- Reward-Proxy (Imitation-Quality) ----
+            # Action range bei InvertedPendulum ist typ. ~2 ([-1,1]). NRMSE damit gut interpretierbar.
+            action_range = 2.0
+            nrmse_te = rmse_te / action_range
+            proxy_reward = -nrmse_te
+
+            if wandb_run is not None:
+                wandb.log({
+                    "train/epoch": ep,
+                    "train/rmse": rmse_tr,
+                    "train/mae": mae_tr,
+                    "test/rmse": rmse_te,
+                    "test/mae": mae_te,
+                    "test/nrmse": nrmse_te,
+                    "train/proxy_reward": - (rmse_tr / action_range),
+                    "test/proxy_reward": proxy_reward,
+                })
+
 
     elif hasattr(model, "fit"):
         # Fallback, falls die lazuardy-Version eine .fit-API besitzt

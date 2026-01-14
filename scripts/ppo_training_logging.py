@@ -1,4 +1,18 @@
-# ppo_with_logging.py
+"""for s in 0 1 2 3 4; do
+  python scripts/ppo_training_logging.py \
+    --env-id InvertedPendulum-v4 \
+    --total-timesteps 100000 \
+    --seed $s \
+    --model-path models/ppo_seed${s}.zip \
+    --eval-freq 10000 \
+    --n-eval-episodes 10 \
+    --wandb-project counterfactual-agents \
+    --group ppo_training_5seeds \
+    --run-name ppo_train_seed${s}
+done
+"""
+
+
 from __future__ import annotations
 
 import argparse
@@ -132,11 +146,11 @@ def main() -> None:
         run_active = True
 
     try:
-        # Train env (VecMonitor liefert episode-Infos)
+        # Train env (VecMonitor for episode-Infos)
         train_env = make_vec_env(args.env_id, n_envs=1, seed=int(args.seed))
         train_env = VecMonitor(train_env)
 
-        # Eval env (separater Seed, damit Evaluation stabil ist)
+        # Eval env (separate Seed, for stable Evaluation)
         eval_env = make_vec_env(args.env_id, n_envs=1, seed=int(args.seed) + 10_000)
         eval_env = VecMonitor(eval_env)
 

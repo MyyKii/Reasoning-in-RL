@@ -1,0 +1,120 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            d71pwaq8x7dpanmr19zkyr5d1dwpxq2d:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "16106127360"
+                args:
+                    - --data
+                    - data/AnfisTrainingSet_PPO.txt
+                    - --epochs
+                    - "3"
+                    - --seed
+                    - "0"
+                    - --bundle-out
+                    - models/anfis_controller_dagger0
+                    - --no-show
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --group
+                    - dagger_seed0
+                    - --run-name
+                    - train_d0_epochtest
+                    - --tags
+                    - seed0,dagger,iter0,epochtest
+                codePath: scripts/anfis_model.py
+                codePathLocal: scripts/anfis_model.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "227830304768"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: 9fd81980400c14b858dc8e561b22c32fbfad60f4
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: Air-von-Tommy.fritz.box
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/anfis_model.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-13T21:59:55.708932Z"
+                writerId: d71pwaq8x7dpanmr19zkyr5d1dwpxq2d
+        m:
+            - "1": dataset/step
+              "6":
+                - 3
+              "7": []
+            - "1": train/epoch
+              "6":
+                - 3
+              "7": []
+            - "1": summary/step
+              "6":
+                - 3
+              "7": []
+            - "2": dataset/*
+              "5": 1
+              "6":
+                - 1
+              "7": []
+            - "2": train/*
+              "5": 2
+              "6":
+                - 1
+              "7": []
+            - "2": summary/*
+              "5": 3
+              "6":
+                - 1
+              "7": []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 5
+                - 53
+            "2":
+                - 5
+                - 53
+            "3":
+                - 7
+                - 13
+                - 15
+                - 16
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+bundle_out:
+    value: models/anfis_controller_dagger0
+data:
+    value: data/AnfisTrainingSet_PPO.txt
+epochs:
+    value: 3
+group:
+    value: dagger_seed0
+kmeans_json:
+    value: null
+no_show:
+    value: true
+run_name:
+    value: train_d0_epochtest
+save_plots:
+    value: null
+seed:
+    value: 0
+tags:
+    value: seed0,dagger,iter0,epochtest
+wandb_project:
+    value: counterfactual-agents

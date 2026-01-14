@@ -15,7 +15,7 @@ LEARNING_RATE = 1e-3
 
 #TODO: Important notice: mlp_data_collector creates binary labels now. 
 #TODO: Can be changed but needs adjustments in mlp_model if desired. 
-#TODO: Are Features correct?
+
 
 # Gymnasium InvertedPendulum action range is [-3, 3]
 ACTION_MAX = 3.0
@@ -30,7 +30,6 @@ def compute_features(state, action):
     x, theta, x_dot, theta_dot = [float(v) for v in state[:4]]
     a = float(action)
 
-    # Normalisierte Magnituden (einfach, robust, und delta wirkt immer über f5)
     f1 = abs(x) / 1.0
     f2 = abs(theta) / THETA_LIMIT
     f3 = abs(x_dot) / 5.0
@@ -192,7 +191,6 @@ def predict_risk(model: RiskMLP, state, action: float) -> float:
     with torch.no_grad():
         y = model(x).reshape(-1)[0].item()
     return float(y)
-
 
 
 if __name__ == "__main__":

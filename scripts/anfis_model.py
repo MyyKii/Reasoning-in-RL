@@ -21,11 +21,10 @@ VENDOR_DIR = os.path.join(BASE_DIR, "vendor")
 if os.path.isdir(VENDOR_DIR) and VENDOR_DIR not in sys.path:
     sys.path.insert(0, VENDOR_DIR)
 
-# lazuardy_anfis (unter vendor/)
 from lazuardy_anfis.anfis import ANFIS  # type: ignore
 from lazuardy_anfis.membershipfunction import MemFuncs  # type: ignore
 
-# Repo-Struktur tolerant halten
+
 try:
     from utils.anfis_io import make_preprocess_dict, save_anfis_bundle
 except ModuleNotFoundError:
@@ -103,7 +102,7 @@ def mf_spec_from_kmeans_grid(Xn: np.ndarray, K: int = 3) -> MFSpec:
     return MFSpec(mfs_per_input=mfs_per_input)
 
 
-# ------------------------------ JSON KMeans (v3) Support ------------------------------
+# ------------------------------ JSON KMeans Support ------------------------------
 
 def load_kmeans_json(path: Path) -> dict:
     import json

@@ -44,12 +44,11 @@ try:
     import gymnasium as gym
     GYMNASIUM = True
 except Exception:
-    import gym  # type: ignore
+    import gym  
     GYMNASIUM = False
 
 from stable_baselines3 import PPO
 
-# Repo-Struktur tolerant halten
 try:
     from utils.anfis_io import load_anfis_bundle, transform_X_with
 except ModuleNotFoundError:

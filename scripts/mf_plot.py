@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-JSON_PATH = "data/kmeans_dagger0.json"
+JSON_PATH = "data/kmeans_dagger0_100k_k4.json"
 
 with open(JSON_PATH, "r") as f:
     data = json.load(f)

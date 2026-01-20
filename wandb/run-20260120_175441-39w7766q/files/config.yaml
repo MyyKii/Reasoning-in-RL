@@ -1,0 +1,127 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            2s3x4rmao8bl1s2thfelkbew4qodbu7l:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "18253611008"
+                args:
+                    - --epochs
+                    - "10"
+                    - --dagger-iter
+                    - "0"
+                    - --seed
+                    - "0"
+                    - --data
+                    - data/AnfisTrainingSet_from_PPO.txt
+                    - --kmeans-json
+                    - data/kmeans_dagger0_100k.json
+                    - --bundle-out
+                    - models/anfis_controller_0
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --group
+                    - dagger_iter0
+                    - --run-name
+                    - anfis_d0_e10_kmeans_ppo_seed0
+                    - --tags
+                    - dagger,iter0,kmeans,ppo,seed0
+                codePath: scripts/anfis_model.py
+                codePathLocal: scripts/anfis_model.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "230191607808"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python3
+                git:
+                    commit: ea22cc09909a20181308f6199fb33d03d908db8e
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: MacBook-Air-von-Tommy.local
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/anfis_model.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-20T16:54:41.816606Z"
+                writerId: 2s3x4rmao8bl1s2thfelkbew4qodbu7l
+        m:
+            - "1": train/epoch_error
+              "5": 2
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": train/epoch
+              "6": []
+              "7": []
+            - "1": train/epoch_rmse_vendor
+              "5": 2
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": train/proxy_reward_vendor
+              "5": 2
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "2": summary/*
+              "6": []
+              "7": []
+            - "2": dataset/*
+              "6": []
+              "7": []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 5
+                - 53
+            "2":
+                - 5
+                - 53
+            "3":
+                - 7
+                - 13
+                - 15
+                - 16
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+action_range:
+    value: 6
+bundle_out:
+    value: models/anfis_controller_0
+dagger_iter:
+    value: 0
+data:
+    value: data/AnfisTrainingSet_from_PPO.txt
+epochs:
+    value: 10
+group:
+    value: dagger_iter0
+kmeans_json:
+    value: data/kmeans_dagger0_100k.json
+run_name:
+    value: anfis_d0_e10_kmeans_ppo_seed0
+seed:
+    value: 0
+sigma_floor:
+    value: 0.2
+sigma_scale:
+    value: 1.5
+tags:
+    value: dagger,iter0,kmeans,ppo,seed0
+wandb_project:
+    value: counterfactual-agents

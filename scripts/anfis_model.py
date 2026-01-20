@@ -204,16 +204,16 @@ def extract_vendor_rmse_curve(model) -> list[float] | None:
 def main():
     ap = argparse.ArgumentParser()
 
-    ap.add_argument("--data", type=Path, default=Path("data/AnfisTrainingSet_PPO.txt"))
+    ap.add_argument("--data", type=Path, default=Path("data/AnfisTrainingSet_from_PPO.txt"))
     ap.add_argument("--epochs", type=int, default=5)
     ap.add_argument("--seed", type=int, default=42)
 
-    ap.add_argument("--kmeans-json", type=Path, default=None,
-                    help="Pfad zur JSON aus kmeans_clustering_v3.py (enthält scaler, centers, sigmas)")
+    ap.add_argument("--kmeans-json", type=Path, default="data/kmeans_dagger0_100k_k4.json",
+                    help="Pfad zur JSON aus kmeans_clustering.py (enthält scaler, centers, sigmas)")
     ap.add_argument("--sigma-floor", type=float, default=0.2, help="Sigma-Floor beim JSON-Import (Stabilität)")
     ap.add_argument("--sigma-scale", type=float, default=1.5, help="Sigma-Scale beim JSON-Import (breitere MFs)")
 
-    ap.add_argument("--bundle-out", type=Path, default=Path("models/anfis_controller"),
+    ap.add_argument("--bundle-out", type=Path, default=Path("models/anfis_controller_0"),
                     help="Basispfad für Anfis-Bundle (ohne Suffix)")
 
     # interpretierbare NRMSE/Proxy-Reward

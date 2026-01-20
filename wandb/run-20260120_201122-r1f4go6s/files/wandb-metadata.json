@@ -1,0 +1,59 @@
+{
+  "os":  "macOS-14.5-arm64-arm-64bit-Mach-O",
+  "python":  "CPython 3.13.1",
+  "startedAt":  "2026-01-20T19:11:22.368614Z",
+  "args":  [
+    "--epochs",
+    "10",
+    "--dagger-iter",
+    "0",
+    "--seed",
+    "0",
+    "--data",
+    "data/AnfisTrainingSet_from_PPO_1k.txt",
+    "--kmeans-json",
+    "data/kmeans_dagger0_1k_k3.json",
+    "--bundle-out",
+    "models/anfis_controller_0",
+    "--wandb-project",
+    "counterfactual-agents",
+    "--group",
+    "dagger_iter0",
+    "--run-name",
+    "anfis_d0_e10_kmeans_ppo_seed0",
+    "--tags",
+    "dagger,iter0,kmeans,ppo,seed0"
+  ],
+  "program":  "/Users/tommykiss/mujoco-py/scripts/anfis_model.py",
+  "codePath":  "scripts/anfis_model.py",
+  "codePathLocal":  "scripts/anfis_model.py",
+  "git":  {
+    "remote":  "git@github.com:MyyKii/Reasoning-in-RL.git",
+    "commit":  "ea22cc09909a20181308f6199fb33d03d908db8e"
+  },
+  "email":  "t.kiss@campus.lmu.de",
+  "root":  "/Users/tommykiss/mujoco-py",
+  "host":  "MacBook-Air-von-Tommy.local",
+  "executable":  "/Users/tommykiss/mujoco-py/venv/bin/python3",
+  "cpu_count":  8,
+  "cpu_count_logical":  8,
+  "disk":  {
+    "/":  {
+      "total":  "245107195904",
+      "used":  "229696442368"
+    }
+  },
+  "memory":  {
+    "total":  "17179869184"
+  },
+  "apple":  {
+    "name":  "Apple M2",
+    "ecpuCores":  4,
+    "pcpuCores":  4,
+    "gpuCores":  8,
+    "memoryGb":  16,
+    "swapTotalBytes":  "18253611008",
+    "ramTotalBytes":  "17179869184"
+  },
+  "writerId":  "7adt2nc6zpce7p1t5so3j4ve3yqhwbvg"
+}

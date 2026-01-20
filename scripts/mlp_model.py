@@ -119,7 +119,7 @@ def run_mlp_model():
         project="counterfactual-agents",
         job_type="mlp_training",
         config=config,
-        run_name="mlp_training_v1",
+        run_name="mlp_training_v5",
     )
     logger.info("W&B Run für MLP-Training initialisiert.")
 

@@ -144,12 +144,12 @@ def do_kmeans_clustering_for_anfis(
 
 if __name__ == "__main__":
     root_path = "/Users/tommykiss/mujoco-py/data"
-    input_data_path = root_path + "/AnfisTrainingSetPPO.txt"
+    input_data_path = root_path + "/AnfisTrainingSet_from_PPO.txt"
     res = do_kmeans_clustering_for_anfis(
         input_data_path, n=3, use_cols=4,
         sigma_method="featurewise_nn", beta=0.55,
         plot=True,
-        export_json_path= "/Users/tommykiss/mujoco-py/data/kmeans_dagger0.json"  # z.B. root_path + "/anfis_rules_k12.json"
+        export_json_path= "/Users/tommykiss/mujoco-py/data/kmeans_dagger0_100k.json"  # z.B. root_path + "/anfis_rules_k12.json"
     )
 
     centers_scaled = res["centers_scaled"]   # -> in ANFIS-MFs als c_{j,k}

@@ -1,0 +1,92 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            0q28v326b7vgmymi01peoh66q60gzn39:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "17179869184"
+                args:
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --run-name
+                    - 10000_collected_data_from_ppo_with_100k_seed0
+                    - --group
+                    - anfis_data_collection_on_100k_ppo_with_100k_steps
+                codePath: scripts/anfis_data_collector.py
+                codePathLocal: scripts/anfis_data_collector.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "229294047232"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python3
+                git:
+                    commit: 459702cd047ae82bb3497e196e21f1431dfc9933
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: MacBook-Air-von-Tommy.local
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/anfis_data_collector.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-20T13:05:21.902675Z"
+                writerId: 0q28v326b7vgmymi01peoh66q60gzn39
+        m:
+            - "1": collector/step
+              "6":
+                - 3
+              "7": []
+            - "2": collector/*
+              "5": 1
+              "6":
+                - 1
+              "7": []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 2
+                - 7
+                - 13
+                - 15
+                - 16
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+anfis_bundle:
+    value: null
+behavior:
+    value: ppo
+deterministic:
+    value: false
+env_id:
+    value: InvertedPendulum-v4
+log_every:
+    value: 1000
+noise_std:
+    value: 0
+out_path:
+    value: data/AnfisTrainingSet_from_PPO.txt
+ppo_model_path:
+    value: models/ppo_invertedpendulum.zip
+precision:
+    value: 6
+seed:
+    value: 0
+steps:
+    value: 100000
+teacher_mix:
+    value: 0

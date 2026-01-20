@@ -1,7 +1,8 @@
 import mlp_data_collector
 import anfis_data_collector
-import ppo
+import scripts.train_ppo as train_ppo
 import ppo_with_logging
+import kmeans_clustering
 import logging
 from pathlib import Path
 
@@ -42,13 +43,17 @@ def start_pipeline():
     # ------------------------------ Run PPO ------------------------------------------
     logging.info("Step 3: Training PPO Agent...")
     #ppo_with_logging()
-    #ppo.py
-    logging.info(f' PPO Model saved in {ppo.PPO_MODEL_PATH}')
+    #train_ppo.train_ppo()
+    logging.info(f' PPO Model saved in {train_ppo.PPO_MODEL_PATH}')
     logging.info("Pipeline completed successfully.")
     # ------------------------------ Collecting Expert Data ------------------------------------------
-    logging.info("Collecting Expert Data with PPO Agent...")
+    logging.info("Step 3: Collecting Expert Data with PPO Agent...")
     anfis_data_collector() # could add parameters if needed
     logging.info(f' Expert Data saved in {anfis_data_collector.OUT_PATH}')
+    # ------------------------------ KMeans Clustering for ANFIS ------------------------------
+    logging.info("Step 4: Performing KMeans Clustering for ANFIS...")
+    kmeans_clustering
+
 
     
 

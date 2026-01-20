@@ -92,7 +92,7 @@ def collect(
     env_id: str = "InvertedPendulum-v4",
     ppo_model_path: str = "models/ppo_seed0.zip",
     steps: int = 1000,
-    out_path: str = "data/AnfisTrainingSetPPO.txt",
+    out_path: str = "data/AnfisTrainingSet_from_PPO.txt",
     seed: int | None = 0,
     deterministic: bool = True,
     precision: int = 6,
@@ -296,8 +296,8 @@ def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser(description="Data-Collector für InvertedPendulum mit PPO-Teacher / DAgger-Lite")
     ap.add_argument("--env-id", default="InvertedPendulum-v4")
     ap.add_argument("--ppo-model-path", default="models/ppo_invertedpendulum.zip")
-    ap.add_argument("--steps", type=int, default=1000)
-    ap.add_argument("--out-path", default="data/AnfisTrainingSetPPO.txt")
+    ap.add_argument("--steps", type=int, default=100000)
+    ap.add_argument("--out-path", default="data/AnfisTrainingSet_from_PPO.txt")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--deterministic", action="store_true")
     ap.add_argument("--precision", type=int, default=6)

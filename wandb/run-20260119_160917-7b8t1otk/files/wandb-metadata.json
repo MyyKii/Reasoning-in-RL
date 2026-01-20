@@ -1,0 +1,45 @@
+{
+  "os":  "macOS-14.5-arm64-arm-64bit-Mach-O",
+  "python":  "CPython 3.13.1",
+  "startedAt":  "2026-01-19T15:09:17.625723Z",
+  "args":  [
+    "--wandb-project",
+    "counterfactual-agents",
+    "--run-name",
+    "10000_collected_data_from_100k_PPO",
+    "--group",
+    "first_data_rollout"
+  ],
+  "program":  "/Users/tommykiss/mujoco-py/scripts/anfis_data_collector.py",
+  "codePath":  "scripts/anfis_data_collector.py",
+  "codePathLocal":  "scripts/anfis_data_collector.py",
+  "git":  {
+    "remote":  "git@github.com:MyyKii/Reasoning-in-RL.git",
+    "commit":  "459702cd047ae82bb3497e196e21f1431dfc9933"
+  },
+  "email":  "t.kiss@campus.lmu.de",
+  "root":  "/Users/tommykiss/mujoco-py",
+  "host":  "Air-von-Tommy.fritz.box",
+  "executable":  "/Users/tommykiss/mujoco-py/venv/bin/python3",
+  "cpu_count":  8,
+  "cpu_count_logical":  8,
+  "disk":  {
+    "/":  {
+      "total":  "245107195904",
+      "used":  "226673078272"
+    }
+  },
+  "memory":  {
+    "total":  "17179869184"
+  },
+  "apple":  {
+    "name":  "Apple M2",
+    "ecpuCores":  4,
+    "pcpuCores":  4,
+    "gpuCores":  8,
+    "memoryGb":  16,
+    "swapTotalBytes":  "15032385536",
+    "ramTotalBytes":  "17179869184"
+  },
+  "writerId":  "2v5edt4aat6kgg3eqfambqmawu74gu3l"
+}

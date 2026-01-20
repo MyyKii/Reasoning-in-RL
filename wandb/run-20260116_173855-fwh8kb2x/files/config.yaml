@@ -1,0 +1,111 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            pbgte6hgs77uoj4ebux358o1evt9n1jv:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "13958643712"
+                args:
+                    - --env-id
+                    - InvertedPendulum-v4
+                    - --model-path
+                    - models/ppo_student_seed0.zip
+                    - --teacher-model-path
+                    - models/ppo_invertedpendulum.zip
+                    - --total-timesteps
+                    - "1000000"
+                    - --nrmse-data
+                    - data/AnfisTrainingSetPPO.txt
+                    - --nrmse-eval-freq
+                    - "250000"
+                    - --nrmse-split
+                    - train
+                    - --nrmse-max-samples
+                    - "5000"
+                    - --episodes
+                    - "20"
+                    - --max-steps
+                    - "5000"
+                    - --seed
+                    - "0"
+                    - --deterministic
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --run-name
+                    - ppo_vs_teacher_nrmse_seed0
+                codePath: scripts/ppo_proper_logging.py
+                codePathLocal: scripts/ppo_proper_logging.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "224969834496"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/venv/bin/python
+                git:
+                    commit: 459702cd047ae82bb3497e196e21f1431dfc9933
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: MacBook-Air-von-Tommy.local
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/ppo_proper_logging.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-16T16:38:55.327215Z"
+                writerId: pbgte6hgs77uoj4ebux358o1evt9n1jv
+        m: []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 2
+                - 13
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.21.0
+            "12": 0.21.0
+            "13": darwin-arm64
+algo:
+    value: PPO
+deterministic:
+    value: true
+env_id:
+    value: InvertedPendulum-v4
+episodes:
+    value: 20
+eval_only:
+    value: false
+log_steps:
+    value: false
+max_steps:
+    value: 5000
+model_path:
+    value: models/ppo_student_seed0.zip
+nrmse_data:
+    value: data/AnfisTrainingSetPPO.txt
+nrmse_eval_freq:
+    value: 250000
+nrmse_max_samples:
+    value: 5000
+nrmse_split:
+    value: train
+nrmse_test_ratio:
+    value: 0.2
+seed:
+    value: 0
+teacher_model_path:
+    value: models/ppo_invertedpendulum.zip
+total_timesteps:
+    value: 1000000

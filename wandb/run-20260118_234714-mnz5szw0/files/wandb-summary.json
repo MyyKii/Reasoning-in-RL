@@ -1,0 +1,1 @@
+{"_timestamp":1.768776453817135e+09,"eval/mean_return":1000,"_step":50676,"train/episode_return":1000,"_runtime":18.222705708,"train/episode_length":1000,"eval/std_return":0,"eval/mean_length":1000,"_wandb":{"runtime":18}}

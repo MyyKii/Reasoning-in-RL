@@ -192,7 +192,10 @@ class TeacherNRMSECallback(BaseCallback):
 
     def _log_now(self) -> None:
         rmse, nrmse_range, neg_nrmse_range, nrmse_std, neg_nrmse_std, action_range = self._compute()
+        pseudo_epoch = int(self._eval_idx) + 1  # 1..K (wie ANFIS)
         metrics = {
+            "train/epoch": pseudo_epoch,
+            "train/timesteps": int(self.num_timesteps),  # optional, aber praktisch
             "train/ppo_rmse_teacher": rmse,
 
             # PPO "official" jetzt range-basiert:

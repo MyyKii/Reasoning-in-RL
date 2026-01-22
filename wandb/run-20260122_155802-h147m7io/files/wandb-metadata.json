@@ -1,0 +1,64 @@
+{
+  "os":  "macOS-14.5-arm64-arm-64bit-Mach-O",
+  "python":  "CPython 3.13.1",
+  "startedAt":  "2026-01-22T14:58:02.826734Z",
+  "args":  [
+    "--env-id",
+    "InvertedPendulum-v4",
+    "--ppo-model-path",
+    "models/ppo_invertedpendulum.zip",
+    "--behavior",
+    "anfis_noise",
+    "--anfis-bundle",
+    "models/anfis_controller_0_51_epochs_seed2",
+    "--noise-std",
+    "0.1",
+    "--teacher-mix",
+    "0.1",
+    "--steps",
+    "1000",
+    "--seed",
+    "2",
+    "--deterministic",
+    "--out-path",
+    "data/dagger1_seed2_1k.txt",
+    "--wandb-project",
+    "counterfactual-agents",
+    "--group",
+    "dagger_collect_iter1",
+    "--run-name",
+    "dagger1_seed2"
+  ],
+  "program":  "/Users/tommykiss/mujoco-py/scripts/anfis_data_collector.py",
+  "codePath":  "scripts/anfis_data_collector.py",
+  "codePathLocal":  "scripts/anfis_data_collector.py",
+  "git":  {
+    "remote":  "git@github.com:MyyKii/Reasoning-in-RL.git",
+    "commit":  "4ec684152be833f05b366a22c47bc3f8f04d4f68"
+  },
+  "email":  "t.kiss@campus.lmu.de",
+  "root":  "/Users/tommykiss/mujoco-py",
+  "host":  "MacBook-Air-von-Tommy.local",
+  "executable":  "/Users/tommykiss/mujoco-py/venv/bin/python",
+  "cpu_count":  8,
+  "cpu_count_logical":  8,
+  "disk":  {
+    "/":  {
+      "total":  "245107195904",
+      "used":  "224868532224"
+    }
+  },
+  "memory":  {
+    "total":  "17179869184"
+  },
+  "apple":  {
+    "name":  "Apple M2",
+    "ecpuCores":  4,
+    "pcpuCores":  4,
+    "gpuCores":  8,
+    "memoryGb":  16,
+    "swapTotalBytes":  "15032385536",
+    "ramTotalBytes":  "17179869184"
+  },
+  "writerId":  "6s8rn69cnpktnhtgbxadcwrqbxs5wgq1"
+}

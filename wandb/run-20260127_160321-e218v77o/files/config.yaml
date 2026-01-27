@@ -1,0 +1,83 @@
+_wandb:
+    value:
+        cli_version: 0.24.0
+        e:
+            el5kwsbh17438w1qct8qxvramlsfigna:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 8
+                    memoryGb: 16
+                    name: Apple M2
+                    pcpuCores: 4
+                    ramTotalBytes: "17179869184"
+                    swapTotalBytes: "21474836480"
+                args:
+                    - --env-id
+                    - InvertedPendulum-v4
+                    - --total-timesteps
+                    - "100000"
+                    - --seed
+                    - "0"
+                    - --model-path
+                    - models/ppo_seed0.zip
+                    - --eval-freq
+                    - "10000"
+                    - --n-eval-episodes
+                    - "10"
+                    - --wandb-project
+                    - counterfactual-agents
+                    - --group
+                    - ppo_training_5seeds
+                    - --run-name
+                    - ppo_train_seed0
+                codePath: scripts/ppo_training_logging.py
+                codePathLocal: scripts/ppo_training_logging.py
+                cpu_count: 8
+                cpu_count_logical: 8
+                disk:
+                    /:
+                        total: "245107195904"
+                        used: "230641721344"
+                email: t.kiss@campus.lmu.de
+                executable: /Users/tommykiss/mujoco-py/testvenv/bin/python
+                git:
+                    commit: 82fcafb0a2d2afd9bbdae3a3de73f0256d7b1545
+                    remote: git@github.com:MyyKii/Reasoning-in-RL.git
+                host: MacBook-Air-von-Tommy.local
+                memory:
+                    total: "17179869184"
+                os: macOS-14.5-arm64-arm-64bit-Mach-O
+                program: /Users/tommykiss/mujoco-py/scripts/ppo_training_logging.py
+                python: CPython 3.13.1
+                root: /Users/tommykiss/mujoco-py
+                startedAt: "2026-01-27T15:03:21.434197Z"
+                writerId: el5kwsbh17438w1qct8qxvramlsfigna
+        m: []
+        python_version: 3.13.1
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 2
+                - 13
+                - 15
+                - 16
+                - 61
+            "4": 3.13.1
+            "5": 0.24.0
+            "12": 0.24.0
+            "13": darwin-arm64
+algo:
+    value: PPO
+env_id:
+    value: InvertedPendulum-v4
+eval_freq:
+    value: 10000
+n_eval_episodes:
+    value: 10
+seed:
+    value: 0
+total_timesteps:
+    value: 100000

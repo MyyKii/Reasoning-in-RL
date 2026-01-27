@@ -1,0 +1,57 @@
+{
+  "os": "macOS-14.5-arm64-arm-64bit-Mach-O",
+  "python": "CPython 3.13.1",
+  "startedAt": "2026-01-27T15:03:21.434197Z",
+  "args": [
+    "--env-id",
+    "InvertedPendulum-v4",
+    "--total-timesteps",
+    "100000",
+    "--seed",
+    "0",
+    "--model-path",
+    "models/ppo_seed0.zip",
+    "--eval-freq",
+    "10000",
+    "--n-eval-episodes",
+    "10",
+    "--wandb-project",
+    "counterfactual-agents",
+    "--group",
+    "ppo_training_5seeds",
+    "--run-name",
+    "ppo_train_seed0"
+  ],
+  "program": "/Users/tommykiss/mujoco-py/scripts/ppo_training_logging.py",
+  "codePath": "scripts/ppo_training_logging.py",
+  "codePathLocal": "scripts/ppo_training_logging.py",
+  "git": {
+    "remote": "git@github.com:MyyKii/Reasoning-in-RL.git",
+    "commit": "82fcafb0a2d2afd9bbdae3a3de73f0256d7b1545"
+  },
+  "email": "t.kiss@campus.lmu.de",
+  "root": "/Users/tommykiss/mujoco-py",
+  "host": "MacBook-Air-von-Tommy.local",
+  "executable": "/Users/tommykiss/mujoco-py/testvenv/bin/python",
+  "cpu_count": 8,
+  "cpu_count_logical": 8,
+  "disk": {
+    "/": {
+      "total": "245107195904",
+      "used": "230641721344"
+    }
+  },
+  "memory": {
+    "total": "17179869184"
+  },
+  "apple": {
+    "name": "Apple M2",
+    "ecpuCores": 4,
+    "pcpuCores": 4,
+    "gpuCores": 8,
+    "memoryGb": 16,
+    "swapTotalBytes": "21474836480",
+    "ramTotalBytes": "17179869184"
+  },
+  "writerId": "el5kwsbh17438w1qct8qxvramlsfigna"
+}

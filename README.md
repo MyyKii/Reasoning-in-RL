@@ -58,6 +58,9 @@ A typical setup (Python **3.10+**) is:
 python -m venv .venv
 source .venv/bin/activate
 pip install -U pip
+pip install -r requirements.txt
+python -m pip install scikit-fuzzy
+
 
 # core runtime
 pip install numpy scipy pandas matplotlib scikit-learn torch
@@ -158,7 +161,7 @@ done
 ```bash
 python scripts/anfis_data_collector.py \
   --env-id InvertedPendulum-v4 \
-  --ppo-model-path models/ppo_seed0.zip \
+  --ppo-model-path models/ppo_seed0.zip \ #change if different path
   --behavior ppo \
   --steps 100000 \
   --out-path data/dagger0_seed0_100k.txt \
@@ -167,17 +170,10 @@ python scripts/anfis_data_collector.py \
 ```
 
 ### Step 3 — run k-means + export MF parameters
-`kmeans_clustering.py` currently has a hardcoded `__main__` section. The cleanest way is to call it as a module:
+`kmeans_clustering.py` currently has a hardcoded `__main__` section.
 
 ```bash
-python -c "from scripts.kmeans_clustering import do_kmeans_clustering_for_anfis; \
-do_kmeans_clustering_for_anfis( \
-  file_path='data/dagger0_seed0_100k.txt', \
-  n=4, use_cols=4, \
-  sigma_method='featurewise_nn', beta=0.55, alpha=1.2, \
-  plot=True, \
-  export_json_path='data/kmeans_dagger0_seed0_100k_k4.json' \
-)"
+python scripts/kmeans_clustering.py
 ```
 
 Notes:
@@ -325,233 +321,6 @@ This section is meant to be **copy/paste runnable** and mirrors the typical eval
 
 > Naming is a convention. If you used different file names during the thesis, keep the *structure* and adjust paths.
 
-### 0) Suggested folder structure
-```bash
-mkdir -p data models
-```
-
-### 1) PPO baselines (5 seeds)
-Train PPO for seeds {0..4} with periodic evaluation (W&B optional):
-```bash
-for s in 0 1 2 3 4; do
-  python scripts/ppo_training_logging.py \
-    --env-id InvertedPendulum-v4 \
-    --total-timesteps 100000 \
-    --seed $s \
-    --model-path models/ppo_seed${s}.zip \
-    --eval-freq 10000 \
-    --n-eval-episodes 10 \
-    --wandb-project counterfactual-agents \
-    --group ppo_training_5seeds \
-    --run-name ppo_train_seed${s}
-done
-```
-
-Quick eval-only (creates the episode return curves):
-```bash
-python scripts/ppo_with_logging.py \
-  --env-id InvertedPendulum-v4 \
-  --model-path models/ppo_seed0.zip \
-  --eval-only \
-  --episodes 20 \
-  --max-steps 5000 \
-  --seed 0 \
-  --deterministic \
-  --wandb-project counterfactual-agents \
-  --run-name ppo_eval_seed0
-```
-
-### 2) DAgger0 imitation dataset (teacher rollouts)
-Collect **(state → PPO action)** pairs:
-```bash
-python scripts/anfis_data_collector.py \
-  --env-id InvertedPendulum-v4 \
-  --ppo-model-path models/ppo_seed0.zip \
-  --behavior ppo \
-  --steps 100000 \
-  --out-path data/dagger0_seed0_100k.txt \
-  --seed 0 \
-  --deterministic
-```
-
-Small debug dataset (fast sanity check):
-```bash
-python scripts/anfis_data_collector.py \
-  --ppo-model-path models/ppo_seed0.zip \
-  --behavior ppo \
-  --steps 1000 \
-  --out-path data/dagger0_seed0_1k.txt \
-  --seed 0 \
-  --deterministic
-```
-
-### 3) k-means MF initialization (K=3 vs K=4 ablation)
-`kmeans_clustering.py` exposes `do_kmeans_clustering_for_anfis(...)` but its `__main__` is hardcoded.
-Run it like this (works whether the file sits in `scripts/` or repo root):
-
-```bash
-python - <<'PY'
-import sys
-from pathlib import Path
-
-# Robust import: try scripts/ package first, then fallback
-try:
-    from scripts.kmeans_clustering import do_kmeans_clustering_for_anfis
-except Exception:
-    sys.path.insert(0, str(Path("scripts").resolve()))
-    from kmeans_clustering import do_kmeans_clustering_for_anfis
-
-DATA = "data/dagger0_seed0_100k.txt"
-
-# K=3
-do_kmeans_clustering_for_anfis(
-    file_path=DATA,
-    n=3, use_cols=4,
-    sigma_method="featurewise_nn", beta=0.55,
-    plot=True,
-    export_json_path="data/kmeans_dagger0_seed0_100k_k3.json",
-)
-
-# K=4
-do_kmeans_clustering_for_anfis(
-    file_path=DATA,
-    n=4, use_cols=4,
-    sigma_method="featurewise_nn", beta=0.55,
-    plot=True,
-    export_json_path="data/kmeans_dagger0_seed0_100k_k4.json",
-)
-PY
-```
-
-(Optional) plot membership functions from a JSON:
-1) open `mf_plot.py`
-2) set `JSON_PATH = "data/kmeans_dagger0_seed0_100k_k3.json"` (or `_k4.json`)
-3) run:
-```bash
-python scripts/mf_plot.py
-```
-
-### 4) Train ANFIS on DAgger0 (K=3 vs K=4)
-Train two ANFIS bundles (only the k-means JSON differs):
-
-```bash
-# K=3
-python scripts/anfis_model_fixed.py \
-  --data data/dagger0_seed0_100k.txt \
-  --kmeans-json data/kmeans_dagger0_seed0_100k_k3.json \
-  --epochs 5 \
-  --seed 42 \
-  --action-range 6.0 \
-  --bundle-out models/anfis_dagger0_seed0_k3 \
-  --dagger-iter 0 \
-  --wandb-project counterfactual-agents \
-  --run-name anfis_dagger0_seed0_k3
-
-# K=4
-python scripts/anfis_model_fixed.py \
-  --data data/dagger0_seed0_100k.txt \
-  --kmeans-json data/kmeans_dagger0_seed0_100k_k4.json \
-  --epochs 5 \
-  --seed 42 \
-  --action-range 6.0 \
-  --bundle-out models/anfis_dagger0_seed0_k4 \
-  --dagger-iter 0 \
-  --wandb-project counterfactual-agents \
-  --run-name anfis_dagger0_seed0_k4
-```
-
-Expected artifacts:
-- `models/anfis_dagger0_seed0_k{3,4}.model.pkl`
-- `models/anfis_dagger0_seed0_k{3,4}.bundle.pkl`
-
-### 5) DAgger1 (DAgger-Lite) + dataset aggregation
-Run the environment with **ANFIS behavior**, but keep labels from PPO (covariate shift reduction):
-```bash
-python scripts/anfis_data_collector.py \
-  --ppo-model-path models/ppo_seed0.zip \
-  --behavior anfis \
-  --anfis-bundle models/anfis_dagger0_seed0_k4 \
-  --steps 1000 \
-  --out-path data/dagger1_seed0_1k.txt \
-  --seed 0 \
-  --deterministic
-```
-
-Aggregate datasets (exact pattern used frequently during the thesis work):
-```bash
-cat data/dagger0_seed0_1k.txt data/dagger1_seed0_1k.txt > data/dagger0_seed0_1k_plus_dagger1_seed0_1k__2k.txt
-```
-
-Then re-run k-means (K=3 or K=4) on the aggregated dataset and retrain ANFIS:
-```bash
-python - <<'PY'
-import sys
-from pathlib import Path
-try:
-    from scripts.kmeans_clustering import do_kmeans_clustering_for_anfis
-except Exception:
-    sys.path.insert(0, str(Path("scripts").resolve()))
-    from kmeans_clustering import do_kmeans_clustering_for_anfis
-
-DATA = "data/dagger0_seed0_1k_plus_dagger1_seed0_1k__2k.txt"
-do_kmeans_clustering_for_anfis(
-    file_path=DATA,
-    n=4, use_cols=4,
-    sigma_method="featurewise_nn", beta=0.55,
-    plot=True,
-    export_json_path="data/kmeans_dagger1_seed0_2k_k4.json",
-)
-PY
-
-python scripts/anfis_model_fixed.py \
-  --data data/dagger0_seed0_1k_plus_dagger1_seed0_1k__2k.txt \
-  --kmeans-json data/kmeans_dagger1_seed0_2k_k4.json \
-  --epochs 5 \
-  --seed 42 \
-  --action-range 6.0 \
-  --bundle-out models/anfis_dagger1_seed0_k4 \
-  --dagger-iter 1 \
-  --wandb-project counterfactual-agents \
-  --run-name anfis_dagger1_seed0_k4
-```
-
-### 6) ANFIS live run (single-run visualization)
-For plots in the thesis we typically used **one run** (otherwise overlays get cluttered):
-```bash
-python scripts/anfis_live_run.py \
-  --env-id InvertedPendulum-v4 \
-  --bundle models/anfis_dagger1_seed0_k4 \
-  --episodes 1 \
-  --max-steps 5000 \
-  --seed 0 \
-  --wandb-project counterfactual-agents \
-  --run-name anfis_live_dagger1_seed0_k4
-```
-
-### 7) Risk model (MLP) + counterfactual live run
-`mlp_data_collector.py` and `mlp_model.py` are currently **config-driven in-file** (no CLI). Run them as-is:
-```bash
-python scripts/mlp_data_collector.py   # -> data/mlp_training_data.json
-python scripts/mlp_model.py            # -> models/mlp_model.pth
-```
-
-Then run the counterfactual agent (ANFIS base action ± delta, risk-min selection):
-```bash
-python scripts/counterfactual_live_run_improved.py \
-  --env-id InvertedPendulum-v4 \
-  --bundle models/anfis_dagger1_seed0_k4 \
-  --mlp-model models/mlp_model.pth \
-  --delta 0.15 \
-  --episodes 1 \
-  --max-steps 5000 \
-  --seed 0 \
-  --wandb-project counterfactual-agents \
-  --wandb-group dagger1_seed0 \
-  --wandb-tags counterfactual,live \
-  --run-name counterfactual_dagger1_seed0_k4
-```
-
----
 
 ## Reproducing thesis-style metrics & overlays
 

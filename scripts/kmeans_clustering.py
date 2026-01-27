@@ -149,7 +149,7 @@ if __name__ == "__main__":
         input_data_path, n=3, use_cols=4,
         sigma_method="featurewise_nn", beta=0.55,
         plot=True,
-        export_json_path= "/Users/tommykiss/mujoco-py/data/kmeans_dagger1_1k_k3_seed2.json"  # z.B. root_path + "/anfis_rules_k12.json"
+        export_json_path= "/Users/tommykiss/mujoco-py/data/kmeans_dagger0_seed0_100k_k4.json"  # z.B. root_path + "/anfis_rules_k12.json"
     )
 
     centers_scaled = res["centers_scaled"]   # -> in ANFIS-MFs als c_{j,k}

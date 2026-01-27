@@ -216,11 +216,9 @@ def main():
     ap.add_argument("--bundle-out", type=Path, default=Path("models/anfis_controller_0"),
                     help="Basispfad für Anfis-Bundle (ohne Suffix)")
 
-    # interpretierbare NRMSE/Proxy-Reward
     ap.add_argument("--action-range", type=float, default=6.0,
                     help="Action high-low. Für InvertedPendulum-v4 typ. 6.0 (-3..+3).")
 
-    # DAgger Iteration als X-Achse über Runs (optional)
     ap.add_argument("--dagger-iter", type=int, default=-1, help="DAgger iteration index (optional)")
 
     # W&B logging (optional)
@@ -247,9 +245,6 @@ def main():
             config={k: (str(v) if isinstance(v, Path) else v) for k, v in vars(args).items()},
         )
 
-        # Epoch-basierte Kurven: X-Achse ist train/epoch
-        # Wichtig: train/epoch muss in JEDEM wandb.log() für diese Metriken enthalten sein,
-        # sonst werden Kurven in der UI „zusammengestaucht“.
         wandb.define_metric("train/epoch")
         for key in [
             "train/epoch_error",
@@ -272,8 +267,6 @@ def main():
     (Xtr, ytr), (Xte, yte) = train_test_split(X, y, test_ratio=0.2, seed=args.seed)
 
     if wandb_run is not None:
-        # Dataset-Metadaten bewusst auf step=0 loggen, damit spätere epoch-Logs
-        # (step=1..epochs) garantiert monoton bleiben.
         wandb.log({
             "dataset/n_samples": int(X.shape[0]),
             "dataset/n_train": int(Xtr.shape[0]),
@@ -315,15 +308,13 @@ def main():
     model = build_model(Xtr_n, ytr_n, mf_spec)
     print("Modell erstellt.")
 
-    # Consequents explizit als 2D setzen, damit predict() -> (N,1) bleibt (Vendor erwartet oft [:,0])
     n_rules = int(np.prod([len(mfs) for mfs in mf_spec.mfs_per_input]))
     n_params = (Xtr_n.shape[1] + 1) * n_rules
     try:
         model.consequents = np.zeros((n_params, 1), dtype=float)
     except Exception:
-        pass  # falls der Fork das intern anders handhabt
+        pass 
 
-    # ---------------- Train (ein Call; Vendor ist nicht zuverlässig epoch-inkrementell) ----------------
     if not hasattr(model, "trainHybridJangOffLine") and not hasattr(model, "fit"):
         raise RuntimeError("ANFIS: Keine Trainingsmethode gefunden (trainHybridJangOffLine/fit).")
 
@@ -334,22 +325,19 @@ def main():
     import re
     import contextlib
 
-    # Flags für den Fallback-Logger weiter unten
     logged_err_from_stdout = False
     logged_rmse_from_stdout = False
     last_epoch_logged = 0
 
     if hasattr(model, "trainHybridJangOffLine"):
-        # Vendor gibt pro Epoche "current error" und "rmse" auf stdout aus.
-        # Wir fangen das ab und loggen es danach pro Epoche nach W&B.
+
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             model.trainHybridJangOffLine(epochs=args.epochs)
 
         train_out = buf.getvalue()
-        print(train_out, end="")  # weiterhin in der Konsole sichtbar
+        print(train_out, end="")  
 
-        # Parse vendor prints (pro Epoche)
         errs = [float(x) for x in re.findall(r"current error:\s*([0-9eE\+\-\.]+)", train_out)]
         rmses = [float(x) for x in re.findall(r"rmse:\s*([0-9eE\+\-\.]+)", train_out)]
         ks = [float(x) for x in re.findall(r"k:\s*([0-9eE\+\-\.]+)", train_out)]
@@ -373,7 +361,6 @@ def main():
                     "train/proxy_reward_vendor": -nrmse,
                 }
 
-                # Optional: zusätzliche Metriken, falls im stdout vorhanden
                 if len(ks) >= ep:
                     log_row["train/k"] = float(ks[ep - 1])
                 if len(sum_ts) >= ep:
@@ -383,26 +370,19 @@ def main():
 
                 wandb.log(log_row, step=ep)
     else:
-    # Fallback falls ein anderer Fork 'fit' anbietet (meist ohne per-epoch stdout prints)
         model.fit(epochs=args.epochs)
 
     train_runtime = time.time() - train_t0
 
 
-    # ---------------- Per-epoch curve from vendor ----------------
     err_curve = extract_vendor_error_curve(model)
     rmse_curve = extract_vendor_rmse_curve(model)
 
     if wandb_run is not None:
-        # WICHTIG: Nicht doppelt auf step=1..epochs loggen, sonst entsteht
-        # "step less than current step" und W&B ignoriert Daten.
-        # Diese Fallback-Kurven nur nutzen, wenn stdout-Parsing keine Werte lieferte.
-        # Falls stdout-Parsing fehlte oder nur teilweise geloggt hat, den Rest aus den Modell-Curves ergänzen.
         start_ep = int(last_epoch_logged) + 1
 
         if (err_curve is not None) and (start_ep <= int(args.epochs)):
             for ep, e in enumerate(err_curve[start_ep - 1 : args.epochs], start=start_ep):
-                # Nur ergänzen, falls nicht bereits aus stdout geloggt.
                 if logged_err_from_stdout and ep <= int(last_epoch_logged):
                     continue
                 wandb.log({"train/epoch": int(ep), "train/epoch_error": float(e)}, step=ep)

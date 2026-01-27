@@ -35,7 +35,6 @@ except Exception:
     _GYMNASIUM = False
 
 
-# Repo-Struktur tolerant halten
 try:
     from utils.anfis_io import load_anfis_bundle, transform_X_with
 except ModuleNotFoundError:
@@ -62,11 +61,10 @@ def _predict_action(
     if obs.shape[0] < 4:
         raise ValueError(f"Observation hat zu wenige Dimensionen: {obs.shape}")
 
-    # erwartetes Feature-Layout: [x, theta, x_dot, theta_dot]
+    # expected Feature-Layout: [x, theta, x_dot, theta_dot]
     x = obs[:4].reshape(1, 4)
     x_n = transform_X_with(preprocess, x)
 
-    # lazuardy_anfis liefert typischerweise shape (N,1) oder (N,)
     y_n = np.asarray(model.predict(x_n)).reshape(-1)[0]
     a = y_n * float(y_stats["y_std"]) + float(y_stats["y_mean"])
 
@@ -91,7 +89,6 @@ def run_live(
     else:
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-    # --- Load ANFIS bundle ---
     model, preprocess, y_stats, meta = load_anfis_bundle(bundle_base)
     logging.info("Loaded ANFIS bundle from %s(.model.pkl/.bundle.pkl)", bundle_base)
     logging.info("Bundle meta: %s", meta)

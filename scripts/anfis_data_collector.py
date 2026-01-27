@@ -123,12 +123,11 @@ def collect(
     if not (0.0 <= teacher_mix <= 1.0):
         raise ValueError("teacher_mix must be in [0,1]")
 
-    # W&B init (optional)
     wandb_run = None
     wandb = None
     if wandb_project:
         try:
-            import wandb as _wandb  # type: ignore
+            import wandb as _wandb 
             wandb = _wandb
         except Exception as e:
             raise RuntimeError(
@@ -157,7 +156,6 @@ def collect(
                 "log_every": int(log_every),
             },
         )
-        # Saubere X-Achse in W&B
         wandb.define_metric("collector/step")
         wandb.define_metric("collector/*", step_metric="collector/step")
 
@@ -169,7 +167,6 @@ def collect(
 
     teacher = PPO.load(ppo_model_path)
 
-    # Optional: load ANFIS bundle if needed
     anfis_model = None
     preprocess = None
     y_stats = None
@@ -185,7 +182,6 @@ def collect(
     ep_idx = 0
 
     try:
-        # Reset
         if GYMNASIUM:
             r = env.reset(seed=seed) if (seed is not None) else env.reset()
             obs = r[0]

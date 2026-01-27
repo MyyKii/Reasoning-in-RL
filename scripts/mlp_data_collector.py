@@ -56,10 +56,6 @@ def compute_label(obs: np.ndarray, mode: str, terminated: bool | None = None) ->
         raise ValueError(f"Unbekannter LABEL_MODE: {mode}")
 
 
-# ---------------------------------------------------------
-# main Pipeline
-# ---------------------------------------------------------
-
 def run_mlp_data_collection() -> None:
     """
     Einstiegspunkt für die Pipeline:
@@ -120,19 +116,17 @@ def collect_data(env: gym.Env) -> None:
         episode_steps = 0
 
         while not (done or truncated) and episode_steps < MAX_STEPS:
-            # 1) zufällige Action für die Umgebung
             action_env = env.action_space.sample()
 
-            # 2) Schritt ausführen
+
             next_obs, reward, terminated, truncated, info = env.step(action_env)
             done = terminated or truncated
 
-            # 3) Action als Skalar für die JSON extrahieren
             if isinstance(action_env, np.ndarray):
                 if action_env.size == 1:
-                    action_value = float(action_env.item())   # Skalar z.B. 0.27
+                    action_value = float(action_env.item())   
                 else:
-                    action_value = action_env.tolist()        # (für spätere multidim Actions)
+                    action_value = action_env.tolist()      
             else:
                 action_value = float(action_env)
 
@@ -154,21 +148,19 @@ def collect_data(env: gym.Env) -> None:
             )
 
 
-            # 6) Zustand & Zähler updaten
             obs = next_obs
             episode_reward += reward
             episode_steps += 1
 
         episode_rewards.append(episode_reward)
 
-        # Logging
         if (ep + 1) % 100 == 0 or ep == 0:
             logger.info(
                 f"Episode {ep+1}/{NUM_EPISODES} abgeschlossen: "
                 f"Reward={episode_reward:.2f}, Steps={episode_steps}"
             )
 
-        # Logging für W&B
+
         log_metrics(
             {
                 "episode_reward": float(episode_reward),
@@ -177,7 +169,7 @@ def collect_data(env: gym.Env) -> None:
             step=ep,
         )
 
-    # JSON-Datei speichern
+
     with open(DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f)
 
@@ -186,7 +178,6 @@ def collect_data(env: gym.Env) -> None:
 
     logger.info(f"{num_points} Datenpunkte gespeichert in {DATA_PATH}")
 
-    # Zusammenfassung für Labels (hier nur kontinuierlich)
     label_array = np.array(labels, dtype=float)
     label_min = float(label_array.min())
     label_max = float(label_array.max())

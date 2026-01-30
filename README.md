@@ -170,14 +170,7 @@ python scripts/anfis_data_collector.py \
 `kmeans_clustering.py` currently has a hardcoded `__main__` section. The cleanest way is to call it as a module:
 
 ```bash
-python -c "from scripts.kmeans_clustering import do_kmeans_clustering_for_anfis; \
-do_kmeans_clustering_for_anfis( \
-  file_path='data/dagger0_seed0_100k.txt', \
-  n=4, use_cols=4, \
-  sigma_method='featurewise_nn', beta=0.55, alpha=1.2, \
-  plot=True, \
-  export_json_path='data/kmeans_dagger0_seed0_100k_k4.json' \
-)"
+python kmeans_clustering.py
 ```
 
 Notes:
@@ -390,37 +383,7 @@ python scripts/anfis_data_collector.py \
 Run it like this (works whether the file sits in `scripts/` or repo root):
 
 ```bash
-python - <<'PY'
-import sys
-from pathlib import Path
-
-# Robust import: try scripts/ package first, then fallback
-try:
-    from scripts.kmeans_clustering import do_kmeans_clustering_for_anfis
-except Exception:
-    sys.path.insert(0, str(Path("scripts").resolve()))
-    from kmeans_clustering import do_kmeans_clustering_for_anfis
-
-DATA = "data/dagger0_seed0_100k.txt"
-
-# K=3
-do_kmeans_clustering_for_anfis(
-    file_path=DATA,
-    n=3, use_cols=4,
-    sigma_method="featurewise_nn", beta=0.55,
-    plot=True,
-    export_json_path="data/kmeans_dagger0_seed0_100k_k3.json",
-)
-
-# K=4
-do_kmeans_clustering_for_anfis(
-    file_path=DATA,
-    n=4, use_cols=4,
-    sigma_method="featurewise_nn", beta=0.55,
-    plot=True,
-    export_json_path="data/kmeans_dagger0_seed0_100k_k4.json",
-)
-PY
+python kmeans_clustering.py
 ```
 
 (Optional) plot membership functions from a JSON:

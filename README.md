@@ -310,19 +310,6 @@ python scripts/counterfactual_live_run_improved.py \
 
 ---
 
-## Reproduce thesis results (recommended experiment recipes)
-
-This section is meant to be **copy/paste runnable** and mirrors the typical evaluation artifacts used in the thesis:
-- multi-seed PPO baselines,
-- DAgger0/DAgger1 imitation datasets,
-- k-means MF initialization ablations (K=3 vs K=4),
-- ANFIS training curves (RMSE / proxy reward),
-- (optional) counterfactual live run with the MLP risk model.
-
-> Naming is a convention. If you used different file names during the thesis, keep the *structure* and adjust paths.
-
-
-## Reproducing thesis-style metrics & overlays
 
 ### Proxy reward (imitation fidelity)
 In the thesis, imitation quality is tracked as:
